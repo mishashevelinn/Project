@@ -44,6 +44,19 @@ class Graph {
 public:
     vector<Vertex*> V;
     map<Vertex*, vector<Vertex*>> Adj;
+    void print();
+
 };
+
+void Graph::print() {
+    for(auto v : V){
+        cout << v->name << " : ";
+        for (auto & u : Adj.at(v)){
+            cout << u->name << " ";
+        }
+        cout << "\n";
+    }
+
+}
 
 #endif //PROJECT_GRAPH_H
