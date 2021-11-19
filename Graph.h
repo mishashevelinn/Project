@@ -44,11 +44,11 @@ class Graph {
 public:
     vector<Vertex*> V;
     map<Vertex*, vector<Vertex*>> Adj;
-    void print();
+    void print() const ;
 
 };
 
-void Graph::print() {
+void Graph::print() const {
     for(auto v : V){
         cout << v->name << " : ";
         for (auto & u : Adj.at(v)){

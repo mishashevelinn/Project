@@ -1,5 +1,8 @@
 #include <iostream>
 #include "Graph.h"
+#include "Algos.h"
+using namespace Traversals;
+
 
 int main() {
     Graph G;
@@ -30,6 +33,10 @@ int main() {
 
     G.Adj[z].push_back(z);
     G.print();
+    bfs(G);
+
+
+
 
     return 0;
 }
