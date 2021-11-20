@@ -1,42 +1,28 @@
 #include <iostream>
 #include "Graph.h"
 #include "Algos.h"
+
 using namespace Traversals;
 
+void test_bfs(Graph &G, Vertex *x, int g = 2) {
+    bfs(G, x, 2);
+    for (Vertex *v: illegal_vertex) {
+        cout << v->name << ", ";
+    }
+
+}
 
 int main() {
     Graph G;
-    Vertex* u = new Vertex("u");
-    Vertex* v = new Vertex("v");
-    Vertex* w = new Vertex("w");
-    Vertex* x = new Vertex("x");
-    Vertex* y = new Vertex("y");
-    Vertex* z = new Vertex("z");
-    G.V.push_back(u);
-    G.V.push_back(v);
-    G.V.push_back(w);
-    G.V.push_back(x);
-    G.V.push_back(y);
-    G.V.push_back(z);
-
-    G.Adj[u].push_back(v);
-    G.Adj[u].push_back(x);
-
-    G.Adj[v].push_back(y);
-
-    G.Adj[w].push_back(y);
-    G.Adj[w].push_back(z);
-
-    G.Adj[x].push_back(v);
-
-    G.Adj[y].push_back(x);
-
-    G.Adj[z].push_back(z);
+    int n = 6;
+    G.add(new Vertex(0));
+    for (int i = 1; i < n; i++) {
+        G.add(new Vertex(i));
+        G.connect(G.V[i - 1], G.V[i]);
+    }
+    G.connect(G.V[0], G.V[n - 1]);
     G.print();
-    bfs(G);
-
-
-
-
+    solve(G, 3);
+    G.print();
     return 0;
 }
