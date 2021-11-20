@@ -6,6 +6,7 @@
 #define PROJECT_GRAPH_H
 
 #include <bits/stdc++.h>
+
 using namespace std;
 
 enum Color {
@@ -26,24 +27,69 @@ string getString(Color color) {
     throw;
 }
 
-class Vertex {
+class Vertex { //TODO add static counter
 public:
-    const string name;
+    const int name;
     Color color;
     int d = 0;
     int f = 0;
-    int cc;
-    Vertex* PI;
-    Vertex() : color(WHITE), d(INT_MAX), PI(nullptr) {
+    Vertex *PI;
+
+    Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
     }
-    Vertex(const string& name) : name(name) {
+
+    Vertex(const int name) : name(name) {
     }
 };
 
 class Graph {
 public:
-    vector<Vertex*> V;
-    map<Vertex*, vector<Vertex*>> Adj;
+    vector<Vertex *> V;
+    map<Vertex *, vector<Vertex *>> Adj;
+
+    void print() const;
+
+    void add(Vertex* newVertex);
+
+    void connect(Vertex *a, Vertex *b);
+
+    void disConnect(Vertex *a, Vertex *b);
+
 };
+
+void Graph::add(Vertex* newVertex) {
+    V.push_back(newVertex);
+}
+
+void Graph::disConnect(Vertex *a, Vertex *b) {
+    vector<Vertex *> aAdj = Adj.at(a);
+    vector<Vertex *> bAdj = Adj.at(b);
+    for (int i = 0; i < aAdj.size(); i++) {
+        if (aAdj[i]->name == b->name) {
+            aAdj.erase(aAdj.begin() + i);
+        }
+    }
+    for (int i = 0; i < bAdj.size(); i++) {
+        if (bAdj[i]->name == a->name) {
+            bAdj.erase(bAdj.begin() + i);
+        }
+    }
+}
+
+void Graph::connect(Vertex *a, Vertex *b) {
+    Adj[a].push_back(b);
+    Adj[b].push_back(a);
+}
+
+void Graph::print() const {
+    for (auto v: V) {
+        cout << v->name << " : ";
+        for (auto &u: Adj.at(v)) {
+            cout << u->name << " ";
+        }
+        cout << "\n";
+    }
+
+}
 
 #endif //PROJECT_GRAPH_H
