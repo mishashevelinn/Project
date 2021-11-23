@@ -1,7 +1,17 @@
 //
 // Created by michael on 16/11/2021.
 //
-
+/* TODO:
+ 
+ algos:
+ 1 long runs (g=5~19, n=10~100000) see what the prob and time
+ 2 check if we should choose the vertex by order or random
+ 3 check if we should pick close vertex to connect or far one.
+ 4 get access to darwin ( Itay Sharon)
+ optimization:
+ 1 cut where we can the Vertex and Graph (data structure)
+ 2 add data structure for "legal vertex's" (less then 3 degree)
+ */
 #ifndef PROJECT_GRAPH_H
 #define PROJECT_GRAPH_H
 
