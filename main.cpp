@@ -17,21 +17,18 @@ int main() {
     int g = 5;
     int success = 0;
     int failure = 0;
-    int avgTime = 0;
     int iteration = 50;
-
+    double avgTime = 0;
+    clock_t start, end;
     for (int i=0; i< iteration; i++) {
         Graph G(n);
-        cout << " availSet size: " << G.availVertexs.size() << endl;
-        auto start = std::chrono::system_clock::now();
+        start = clock();
         solve(G, g)? success++ : failure++ ;
-        auto end = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = end-start;
-        avgTime += elapsed_seconds.count();
-        G.print();
+        end = clock();
+        avgTime += double(end - start) / double(CLOCKS_PER_SEC);
+//        G.print();
     }
     avgTime /= iteration;
     cout << "after " << iteration << " tries: " << success << " successes, and " << failure << " failures\n" << "avg time: " << avgTime;
-
     return 0;
 }
