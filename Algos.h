@@ -59,11 +59,14 @@ namespace Traversals {
 
         bool generateEdge(Graph &g, Vertex *v) {
             int counter = 0;
-            int u = random(0, g.V.size());
+            int u = random(0, g.V.size() - 1);
             while (!isLegalNeighbour(g, g.V[u])) {
-                if (counter == g.V.size()) return false;
+                if (counter == g.V.size()*4){
+                    cout << "coldn't guess the name\n";
+                    return false;
+                }
                 counter++;
-                u = random(0, g.V.size());
+                u = random(0, g.V.size() - 1);
             }
             g.connect(v, g.V[u]);
             return true;
