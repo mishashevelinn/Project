@@ -13,16 +13,22 @@ void test_bfs(Graph &G, Vertex *x, int g = 2) {
 }
 
 int main() {
-    Graph G;
-    int n = 6;
-    G.add(new Vertex(0));
-    for (int i = 1; i < n; i++) {
-        G.add(new Vertex(i));
-        G.connect(G.V[i - 1], G.V[i]);
+    int n = 100;
+    int g = 5;
+    int success = 0;
+    int failure = 0;
+    int iteration = 50;
+    double avgTime = 0;
+    clock_t start, end;
+    for (int i=0; i< iteration; i++) {
+        Graph G(n);
+        start = clock();
+        solve(G, g)? success++ : failure++ ;
+        end = clock();
+        avgTime += double(end - start) / double(CLOCKS_PER_SEC);
+//        G.print();
     }
-    G.connect(G.V[0], G.V[n - 1]);
-    G.print();
-    solve(G, 3);
-    G.print();
+    avgTime /= iteration;
+    cout << "after " << iteration << " tries: " << success << " successes, and " << failure << " failures\n" << "avg time: " << avgTime;
     return 0;
 }

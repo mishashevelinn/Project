@@ -37,6 +37,14 @@ namespace Traversals {
             return random_integer;
         }
 
+        int randomVertex(set<Vertex*> s) {
+            auto it = std::begin(s);
+            int n = random(0, s.size() - 1);
+            // 'advance' the iterator n times
+            std::advance(it,n);
+            return (*it)->name;
+        }
+
         void clear_queue(queue<Vertex *> q) {
             std::queue<Vertex *> empty;
             std::swap(q, empty);
@@ -54,55 +62,28 @@ namespace Traversals {
         }
 
         bool isLegalNeighbour(const Graph &G, Vertex *v) { //TODO inline?
-            return v->color == WHITE && G.Adj.at(v).size() < 3;
+            return v->color == WHITE;
         }
 
         bool generateEdge(Graph &g, Vertex *v) {
             int counter = 0;
-            int u = random(0, g.V.size() - 1);
-            while (!isLegalNeighbour(g, g.V[u])) {
+            g.availVertexes.erase(g.availVertexes.find(v));
+            int idx = randomVertex(g.availVertexes);
+            while (!isLegalNeighbour(g, g.V[idx])) {
                 if (counter == g.V.size()*4){
-                    cout << "coldn't guess the name\n";
                     return false;
                 }
                 counter++;
-                u = random(0, g.V.size() - 1);
+                idx = randomVertex(g.availVertexes);
             }
-            g.connect(v, g.V[u]);
+            g.connect(v, g.V[idx]);
+
+            g.availVertexes.erase(g.availVertexes.find(g.V[idx]));
             return true;
         }
     }
 
-
-    void dfsVisit(const Graph &G, Vertex *u) {
-        u->d = ++time;  // white vertex u has just been discovered
-        u->color = GRAY;
-
-        for (Vertex *v: G.Adj.at(u)) {  // explore edge (u, v)
-            if (v->color == WHITE) {
-                v->PI = u;
-                dfsVisit(G, v);
-            } else {
-                G.print();
-            }
-        }
-        u->f = ++time;
-        u->color = BLACK;  // blacken u; it is finished
-        G.print();
-    }
-
-    void dfs(const Graph &G) {
-        for (Vertex *u: G.V) {
-            u->color = WHITE;
-            u->PI = nullptr;
-        }
-        time = 0;
-        for (Vertex *u: G.V)
-            if (u->color == WHITE)
-                dfsVisit(G, u);
-    }
-
-    void bfs(const Graph &G, Vertex *root, int g) {
+    void bfs(Graph &G, Vertex *root, int g) {
         tools::vanish_vector(illegal_vertex);
         time = 0;
         queue<Vertex *> Q;
@@ -115,7 +96,7 @@ namespace Traversals {
             for (Vertex *u: G.Adj.at(v)) {
                 if (u->color == WHITE) {
                     u->d = v->d + 1;
-                    if (u->d == g + 1) {
+                    if (u->d == g + 1) { //TODO check if g or g+1
                         return;
                     }
                     u->color = BLACK;
@@ -130,7 +111,7 @@ namespace Traversals {
     bool solve(Graph &G, int g) {
         g--;
         for (Vertex *v: G.V) {
-            if (v->name == G.V.size() - 1) break;
+            if (v->name == G.V.size() - 1) return true;
             if (G.Adj.at(v).size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
