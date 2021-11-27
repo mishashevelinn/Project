@@ -71,7 +71,6 @@ namespace Traversals {
             int idx = randomVertex(g.availVertexes);
             while (!isLegalNeighbour(g, g.V[idx])) {
                 if (counter == g.V.size()*4){
-                    cout << "couldn't guess the name\n";
                     return false;
                 }
                 counter++;
@@ -86,13 +85,6 @@ namespace Traversals {
 
     void bfs(Graph &G, Vertex *root, int g) {
         tools::vanish_vector(illegal_vertex);
-        G.V[0]->color = WHITE;
-        for(Vertex *v: G.V){
-            if(v->color != WHITE){
-                cerr << v->name <<"'s color is "<< v->color <<endl;
-            }
-        }
-
         time = 0;
         queue<Vertex *> Q;
         Q.push(root);
@@ -104,7 +96,7 @@ namespace Traversals {
             for (Vertex *u: G.Adj.at(v)) {
                 if (u->color == WHITE) {
                     u->d = v->d + 1;
-                    if (u->d == g + 1) {
+                    if (u->d == g + 1) { //TODO check if g or g+1
                         return;
                     }
                     u->color = BLACK;
@@ -123,7 +115,7 @@ namespace Traversals {
             if (G.Adj.at(v).size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
-            //v->color = WHITE;
+            v->color = WHITE;
         }
         return true;
     }
