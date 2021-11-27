@@ -22,7 +22,7 @@ int main() {
 
     for (int i=0; i< iteration; i++) {
         Graph G(n);
-        cout << " availSet size: " << G.availVertexs.size() << endl;
+        cout << " availSet size: " << G.availVertexes.size() << endl;
         auto start = std::chrono::system_clock::now();
         solve(G, g)? success++ : failure++ ;
         auto end = std::chrono::system_clock::now();

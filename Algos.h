@@ -67,25 +67,32 @@ namespace Traversals {
 
         bool generateEdge(Graph &g, Vertex *v) {
             int counter = 0;
-            g.availVertexs.erase(g.availVertexs.find(v));
-            int idx = randomVertex(g.availVertexs);
+            g.availVertexes.erase(g.availVertexes.find(v));
+            int idx = randomVertex(g.availVertexes);
             while (!isLegalNeighbour(g, g.V[idx])) {
                 if (counter == g.V.size()*4){
-                    cout << "coldn't guess the name\n";
+                    cout << "couldn't guess the name\n";
                     return false;
                 }
                 counter++;
-                idx = randomVertex(g.availVertexs);
+                idx = randomVertex(g.availVertexes);
             }
             g.connect(v, g.V[idx]);
 
-            g.availVertexs.erase(g.availVertexs.find(g.V[idx]));
+            g.availVertexes.erase(g.availVertexes.find(g.V[idx]));
             return true;
         }
     }
 
-    void bfs(const Graph &G, Vertex *root, int g) {
+    void bfs(Graph &G, Vertex *root, int g) {
         tools::vanish_vector(illegal_vertex);
+        G.V[0]->color = WHITE;
+        for(Vertex *v: G.V){
+            if(v->color != WHITE){
+                cerr << v->name <<"'s color is "<< v->color <<endl;
+            }
+        }
+
         time = 0;
         queue<Vertex *> Q;
         Q.push(root);
@@ -112,11 +119,11 @@ namespace Traversals {
     bool solve(Graph &G, int g) {
         g--;
         for (Vertex *v: G.V) {
-            if (v->name == G.V.size() - 1) break;
+            if (v->name == G.V.size() - 1) return true;
             if (G.Adj.at(v).size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
-            v->color = WHITE;
+            //v->color = WHITE;
         }
         return true;
     }

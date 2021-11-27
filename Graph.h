@@ -48,7 +48,7 @@ public:
     Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
     }
 
-    Vertex(const int name) : name(name) {
+    Vertex(const int name) : name(name), color(WHITE) {
     }
 };
 
@@ -56,7 +56,7 @@ class Graph {
 public:
     vector<Vertex *> V;
     map<Vertex *, vector<Vertex *>> Adj;
-    set<Vertex *> availVertexs;
+    set<Vertex *> availVertexes;
 
     Graph(int n);
 
@@ -77,8 +77,10 @@ Graph::Graph(int n) {
         connect(V[i - 1], V[i]);
     }
     connect(V[n-1], V[0]);
-    availVertexs = set<Vertex*>(V.begin(), V.end());
+    availVertexes = set<Vertex*>(V.begin(), V.end());
+
 }
+
 
 void Graph::add(Vertex* newVertex) {
     V.push_back(newVertex);
