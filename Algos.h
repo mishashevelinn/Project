@@ -16,11 +16,11 @@ namespace Traversals {
     int time = 0;
     int iterationCounter = 0;
 
-    vector<Vertex *> illegal_vertex;
+    vector<int> illegal_vertex;
     namespace tools {
         void vanish(Graph &G) {
 
-            for (Vertex *v: G.V) {
+            for (int v: G.V) {
                 v->color = WHITE;
                 v->PI = nullptr;
                 v->f = 0;

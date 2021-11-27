@@ -37,81 +37,85 @@ string getString(Color color) {
     throw;
 }
 
-class Vertex { //TODO add static counter
-public:
-    const int name;
-    Color color;
-    int d = 0;
-    int f = 0;
-    Vertex *PI;
-
-    Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
-    }
-
-    Vertex(const int name) : name(name), color(WHITE) {
-    }
-};
+//class Vertex { //TODO add static counter
+//public:
+//    const int name;
+//    Color color;
+//    int d = 0;
+//    int f = 0;
+//    Vertex *PI;
+//
+//    Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
+//    }
+//
+//    Vertex(const int name) : name(name), color(WHITE) {
+//    }
+//};
 
 class Graph {
 public:
-    vector<Vertex *> V;
-    map<Vertex *, vector<Vertex *>> Adj;
-    set<Vertex *> availVertexes;
+    vector<int> V;
+    map<int, vector<int>> Adj;
+    set<int> availVertexes;
+    vector<bool> visited;
+    vector<int> d;
 
     Graph(int n);
 
     void print() const;
 
-    void add(Vertex* newVertex);
+    void add(int);
 
-    void connect(Vertex *a, Vertex *b);
+    void connect(int, int);
 
-    void disConnect(Vertex *a, Vertex *b);
+    void disConnect(int, int);
 
 };
 
 Graph::Graph(int n) {
-    add(new Vertex(0));
+    add(0);
     for (int i = 1; i < n; i++) {
-        add(new Vertex(i));
+        add(i);
         connect(V[i - 1], V[i]);
     }
     connect(V[n-1], V[0]);
-    availVertexes = set<Vertex*>(V.begin(), V.end());
+    availVertexes = set<int>(V.begin(), V.end());
+    visited = vector<bool>(n, false);
+    d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
 
 }
 
 
-void Graph::add(Vertex* newVertex) {
+void Graph::add(int newVertex) {
     V.push_back(newVertex);
 }
 
-void Graph::disConnect(Vertex *a, Vertex *b) {
-    vector<Vertex *> aAdj = Adj.at(a);
-    vector<Vertex *> bAdj = Adj.at(b);
+void Graph::disConnect(int a, int b) {
+    vector<int> aAdj = Adj.at(a);
+    vector<int> bAdj = Adj.at(b);
     for (int i = 0; i < aAdj.size(); i++) {
-        if (aAdj[i]->name == b->name) {
+        if (aAdj[i] == b) {
             aAdj.erase(aAdj.begin() + i);
 
         }
     }
     for (int i = 0; i < bAdj.size(); i++) {
-        if (bAdj[i]->name == a->name) {
+        if (bAdj[i] == a) {
             bAdj.erase(bAdj.begin() + i);
         }
     }
 }
 
-void Graph::connect(Vertex *a, Vertex *b) {
+void Graph::connect(int a, int b) {
     Adj[a].push_back(b);
     Adj[b].push_back(a);
 }
 
 void Graph::print() const {
     for (auto v: V) {
-        cout << v->name << " : ";
+        cout << v << " : ";
         for (auto &u: Adj.at(v)) {
-            cout << u->name << " ";
+            cout << u << " ";
         }
         cout << "\n";
     }
