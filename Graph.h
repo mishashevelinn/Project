@@ -56,6 +56,9 @@ class Graph {
 public:
     vector<Vertex *> V;
     map<Vertex *, vector<Vertex *>> Adj;
+    set<Vertex *> availVertexs;
+
+    Graph(int n);
 
     void print() const;
 
@@ -67,6 +70,16 @@ public:
 
 };
 
+Graph::Graph(int n) {
+    add(new Vertex(0));
+    for (int i = 1; i < n; i++) {
+        add(new Vertex(i));
+        connect(V[i - 1], V[i]);
+    }
+    connect(V[n-1], V[0]);
+    availVertexs = set<Vertex*>(V.begin(), V.end());
+}
+
 void Graph::add(Vertex* newVertex) {
     V.push_back(newVertex);
 }
@@ -77,6 +90,7 @@ void Graph::disConnect(Vertex *a, Vertex *b) {
     for (int i = 0; i < aAdj.size(); i++) {
         if (aAdj[i]->name == b->name) {
             aAdj.erase(aAdj.begin() + i);
+
         }
     }
     for (int i = 0; i < bAdj.size(); i++) {
