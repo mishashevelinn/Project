@@ -60,7 +60,7 @@ public:
     vector<bool> visited;
     vector<int> d;
 
-    Graph(int n);
+    explicit Graph(int n);
 
     void print() const;
 

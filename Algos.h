@@ -19,12 +19,9 @@ namespace Traversals {
     vector<int> illegal_vertex;
     namespace tools {
         void vanish(Graph &G) {
-
             for (int v: G.V) {
-                v->color = WHITE;
-                v->PI = nullptr;
-                v->f = 0;
-                v->d = 0;
+                G.visited[v] = false;
+                G.d[v] = 0;
             }
         }
 
@@ -37,40 +34,37 @@ namespace Traversals {
             return random_integer;
         }
 
-        int randomVertex(set<Vertex*> s) {
+        int randomVertex(set<int> s) {
             auto it = std::begin(s);
             int n = random(0, s.size() - 1);
             // 'advance' the iterator n times
             std::advance(it,n);
-            return (*it)->name;
+            return (*it);
         }
 
-        void clear_queue(queue<Vertex *> q) {
-            std::queue<Vertex *> empty;
+        void clear_queue(queue<int> q) {
+            std::queue<int> empty;
             std::swap(q, empty);
         }
 
-        void vanish_vector(vector<Vertex *> v) {
-            for (Vertex *u: v) {
-                u->color = WHITE;
-                u->d = 0;
-                u->PI = nullptr;
+        void vanish_vector(Graph & G, vector<int> vec) {
+            for (int v : vec) {
+                G.visited[v] = false;
+                G.d[v] = 0;
             }
-            v.clear();
-
-
+            vec.clear();
         }
 
-        bool isLegalNeighbour(const Graph &G, Vertex *v) { //TODO inline?
-            return v->color == WHITE;
+        bool isLegalNeighbour(const Graph &G, int v) { //TODO inline?
+            return !G.visited[v];
         }
 
-        bool generateEdge(Graph &g, Vertex *v) {
+        bool generateEdge(Graph &g, int v) {
             int counter = 0;
-            g.availVertexes.erase(g.availVertexes.find(v));
-            int idx = randomVertex(g.availVertexes);
-            while (!isLegalNeighbour(g, g.V[idx])) {
-                if (counter == g.V.size()*4){
+            g.availVertexes.erase(g.availVertexes.find(v)); //exclude the vertex itself, no loops in the graph
+            int idx = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
+            while (!isLegalNeighbour(g, g.V[idx])) { // TODO if we fail to pick the vertex once, there are no available vertexes
+                if (counter == g.V.size()*4){       //Pull out visited in bfs vertexes from available set?
                     return false;
                 }
                 counter++;
@@ -83,25 +77,24 @@ namespace Traversals {
         }
     }
 
-    void bfs(Graph &G, Vertex *root, int g) {
-        tools::vanish_vector(illegal_vertex);
+    void bfs(Graph &G, int root, int g) {
+        tools::vanish_vector(G, illegal_vertex);
         time = 0;
-        queue<Vertex *> Q;
+        queue<int> Q;
         Q.push(root);
-        root->color = BLACK;
+        G.visited[root] = true;
         while (!Q.empty()) {
-            Vertex *v = Q.front();
+            int v = Q.front();
             Q.pop();
             time++;
-            for (Vertex *u: G.Adj.at(v)) {
-                if (u->color == WHITE) {
-                    u->d = v->d + 1;
-                    if (u->d == g + 1) { //TODO check if g or g+1
+            for (int u : G.Adj.at(v)) {
+                if (!G.visited[u]) {
+                    G.d[u] = G.d[v] + 1;
+                    if (G.d[u] == g + 1) { //TODO check if g or g+1
                         return;
                     }
-                    u->color = BLACK;
+                    G.visited[u] = true;
                     illegal_vertex.push_back(u);
-                    u->PI = v;
                     Q.push(u);
                 }
             }
@@ -110,12 +103,12 @@ namespace Traversals {
 
     bool solve(Graph &G, int g) {
         g--;
-        for (Vertex *v: G.V) {
-            if (v->name == G.V.size() - 1) return true;
+        for (int v: G.V) {
+            if (v == G.V.size() - 1) return true;
             if (G.Adj.at(v).size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
-            v->color = WHITE;
+            G.visited[v] = false;
         }
         return true;
     }
