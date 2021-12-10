@@ -16,7 +16,6 @@ namespace Traversals {
     int time = 0;
     int iterationCounter = 0;
 
-    vector<int> illegal_vertex;
     namespace tools {
         void vanish(Graph &G) {
             for (int v: G.V) {
@@ -78,7 +77,7 @@ namespace Traversals {
     }
 
     void bfs(Graph &G, int root, int g) {
-        tools::vanish_vector(G, illegal_vertex);
+        tools::vanish(G);
         time = 0;
         queue<int> Q;
         Q.push(root);
@@ -94,7 +93,6 @@ namespace Traversals {
                         return;
                     }
                     G.visited[u] = true;
-                    illegal_vertex.push_back(u);
                     Q.push(u);
                 }
             }

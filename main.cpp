@@ -14,10 +14,10 @@ using namespace Traversals;
 
 int main() {
     int n = 100;
-    int g = 5;
+    int g = 10;
     int success = 0;
     int failure = 0;
-    int iteration = 50;
+    int iteration = 100;
     double avgTime = 0;
 
 
@@ -28,7 +28,7 @@ int main() {
         solve(G, g)? success++ : failure++ ;
         end = clock();
         avgTime += double(end - start) / double(CLOCKS_PER_SEC);
-        G.print();
+//        G.print();
     }
     avgTime /= iteration;
     cout << "after " << iteration << " tries: " << success << " successes, and " << failure << " failures\n" << "avg time: " << avgTime;

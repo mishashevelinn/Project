@@ -19,38 +19,7 @@
 
 using namespace std;
 
-enum Color {
-    WHITE,
-    GRAY,
-    BLACK,
-};
 
-string getString(Color color) {
-    switch (color) {
-        case WHITE:
-            return "WHITE";
-        case GRAY:
-            return "GRAY";
-        case BLACK:
-            return "BLACK";
-    }
-    throw;
-}
-
-//class Vertex { //TODO add static counter
-//public:
-//    const int name;
-//    Color color;
-//    int d = 0;
-//    int f = 0;
-//    Vertex *PI;
-//
-//    Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
-//    }
-//
-//    Vertex(const int name) : name(name), color(WHITE) {
-//    }
-//};
 
 class Graph {
 public:
