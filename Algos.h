@@ -18,7 +18,7 @@ namespace Traversals {
 
     namespace tools {
         void vanish(Graph &G) {
-            for (int v: G.V) {
+            for (int v = 0; v < G.n; v++) {
                 G.visited[v] = false;
                 G.d[v] = 0;
             }
@@ -54,24 +54,24 @@ namespace Traversals {
             vec.clear();
         }
 
-        bool isLegalNeighbour(const Graph &G, int v) { //TODO inline?
-            return !G.visited[v];
+        bool isLegalNeighbour(const Graph &G, int u) { //TODO inline?
+            return !G.visited[u];
         }
 
         bool generateEdge(Graph &g, int v) {
             int counter = 0;
             g.availVertexes.erase(g.availVertexes.find(v)); //exclude the vertex itself, no loops in the graph
-            int idx = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
-            while (!isLegalNeighbour(g, g.V[idx])) { // TODO if we fail to pick the vertex once, there are no available vertexes
+            int u = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
+            while (!isLegalNeighbour(g, u)) { // TODO if we fail to pick the vertex once, there are no available vertexes
                 if (counter == g.V.size()*4){       //Pull out visited in bfs vertexes from available set?
                     return false;
                 }
                 counter++;
-                idx = randomVertex(g.availVertexes);
+                u = randomVertex(g.availVertexes);
             }
-            g.connect(v, g.V[idx]);
+            g.connect(v, u);
 
-            g.availVertexes.erase(g.availVertexes.find(g.V[idx]));
+            g.availVertexes.erase(g.availVertexes.find(u));
             return true;
         }
     }
@@ -86,7 +86,7 @@ namespace Traversals {
             int v = Q.front();
             Q.pop();
             time++;
-            for (int u : G.Adj.at(v)) {
+            for (int u : G.new_Adj[v]) {
                 if (!G.visited[u]) {
                     G.d[u] = G.d[v] + 1;
                     if (G.d[u] == g + 1) { //TODO check if g or g+1
@@ -103,7 +103,7 @@ namespace Traversals {
         g--;
         for (int v: G.V) {
             if (v == G.V.size() - 1) return true;
-            if (G.Adj.at(v).size() == 3) continue;
+            if (G.new_Adj[v].size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
             G.visited[v] = false;

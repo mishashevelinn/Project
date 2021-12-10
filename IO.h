@@ -9,22 +9,30 @@
 
 #ifndef PROJECT_IO_H
 #define PROJECT_IO_H
-namespace io{
-//    void write_vector(const std::vector<int> &v, const std::string& path){
-//        std::ofstream output_file(path);
-//        std::ostream_iterator<std::string> output_iterator(output_file, "\n");
-//        std::copy(v.begin(), v.end(), output_iterator);
-//    }
-    void write_map(const std::map<int, std::vector<int>> Adj, std::string path){
+namespace io {
+
+
+    void write_map(const std::map<int, std::vector<int>> Adj, std::string path) {
         ofstream stream(path);
-        for(auto &kv: Adj){
+        for (auto &kv: Adj) {
             stream << kv.first << "---->";
             std::ostream_iterator<int> output_iterator(stream, " ");
             std::copy(Adj.at(kv.first).begin(), Adj.at(kv.first).end(), output_iterator);
             stream << "\n";
-            }
+        }
+    }
+
+    void write_graph(const Graph &G, string path) {
+        ofstream stream(path);
+        for (int v = 0; v < G.n; v++) {
+            stream << v << " ----> ";
+            std::ostream_iterator<int> output_iterator(stream, " ");
+            std::copy(G.new_Adj[v].begin(), G.new_Adj[v].end(), output_iterator);
+            stream << endl;
+
         }
 
     }
+}
 
 #endif //PROJECT_IO_H

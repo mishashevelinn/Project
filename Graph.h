@@ -17,8 +17,10 @@
 
 #include <bits/stdc++.h>
 
-using namespace std;
+#include <boost/dynamic_bitset.hpp>
+#include <iostream>
 
+using namespace std;
 
 
 class Graph {
@@ -28,6 +30,9 @@ public:
     set<int> availVertexes;
     vector<bool> visited;
     vector<int> d;
+    vector<boost::dynamic_bitset<>> bitAdj;
+    int n;
+    vector<vector<int>> new_Adj;
 
     explicit Graph(int n);
 
@@ -38,16 +43,17 @@ public:
     void connect(int, int);
 
     void disConnect(int, int);
-
 };
 
-Graph::Graph(int n) {
+Graph::Graph( int n) {
+    Graph::n = n;
+    new_Adj = vector<vector<int>>(n, vector<int>()); // k = 3
+
     add(0);
-    for (int i = 1; i < n; i++) {
+    for (int i = 0; i < n ; i++) {
         add(i);
-        connect(V[i - 1], V[i]);
+        connect(i, (i+1) % n);
     }
-    connect(V[n-1], V[0]);
     availVertexes = set<int>(V.begin(), V.end());
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
@@ -76,8 +82,8 @@ void Graph::disConnect(int a, int b) {
 }
 
 void Graph::connect(int a, int b) {
-    Adj[a].push_back(b);
-    Adj[b].push_back(a);
+    new_Adj[a].push_back(b);
+    new_Adj[b].push_back(a);
 }
 
 void Graph::print() const {
@@ -86,9 +92,19 @@ void Graph::print() const {
         for (auto &u: Adj.at(v)) {
             cout << u << " ";
         }
-        cout << "\n";
     }
 
+}
+std::ostream &operator<<(std::ostream &os, const Graph &rhs) {
+
+    for (int v = 0; v < rhs.n; v++) {
+        os << v << " ---> ";
+        for (int u: rhs.new_Adj[v]) {
+            os << u << " ";
+        }
+        os << endl;
+    }
+    return os;
 }
 
 #endif //PROJECT_GRAPH_H
