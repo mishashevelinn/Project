@@ -15,7 +15,7 @@ using namespace io;
 //}
 
 int main() {
-    int n = 20;
+    int n = 1000;
     int g = 5;
     int success = 0;
     int failure = 0;
@@ -29,9 +29,8 @@ int main() {
         Graph G(n);
         start = clock();
         solve(G, g)? success++ : failure++;
-        if (success != 0 ){
+        if (success == 1 ){
             cout << G;
-            break;
         }
         end = clock();
         avgTime += double(end - start) / double(CLOCKS_PER_SEC);

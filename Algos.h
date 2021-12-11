@@ -17,8 +17,8 @@ namespace Traversals {
     int iterationCounter = 0;
 
     namespace tools {
-        void vanish(Graph &G) {
-            for (int v = 0; v < G.n; v++) {
+        void clear(Graph &G) {
+            for (int v : G.visited_track) {
                 G.visited[v] = false;
                 G.d[v] = 0;
             }
@@ -65,11 +65,12 @@ namespace Traversals {
     }
 
     void bfs(Graph &G, int root, int g) {
-        tools::vanish(G);
+        tools::clear(G);
         time = 0;
         queue<int> Q;
         Q.push(root);
         G.visited[root] = true;
+        G.visited_track.push_back(root);
         while (!Q.empty()) {
             int v = Q.front();
             Q.pop();
@@ -81,6 +82,7 @@ namespace Traversals {
                         return;
                     }
                     G.visited[u] = true;
+                    G.visited_track.push_back(u);
                     Q.push(u);
                 }
             }

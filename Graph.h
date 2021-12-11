@@ -29,6 +29,8 @@ public:
     vector<int> d;
     int n;
     vector<vector<int>> Adj;
+    vector<int> visited_track;
+
 
 
     explicit Graph(int n);
@@ -52,8 +54,8 @@ Graph::Graph( int n) {
     }
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
+    visited_track = vector<int>(32);
 
-//    visited_track = vector<int>()
 }
 
 /**********NEVER__USED******************/
