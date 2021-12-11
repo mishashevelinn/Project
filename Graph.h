@@ -30,25 +30,23 @@ public:
     vector<bool> visited;
     vector<int> d;
     int n;
+    int g;
     vector<vector<int>> Adj;
     vector<int> visited_track;
     boost::dynamic_bitset<> availV;
 
 
 
-    explicit Graph(int n);
-
-    void print() const;
-
-    void add(int);
+    explicit Graph(int n, int g);
 
     void connect(int, int);
 
     void disConnect(int, int);
 };
 
-Graph::Graph( int n) {
+Graph::Graph( int n, int g) {
     Graph::n = n;
+    Graph::g = g;
 
     Adj = vector<vector<int>>(n, vector<int>()); // k = 3
     availV = boost::dynamic_bitset<>(n);

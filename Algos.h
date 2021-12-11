@@ -64,9 +64,11 @@ namespace Traversals {
         }
     }
 
-    void bfs(Graph &G, int root, int g) {
+    bool bfs(Graph &G, int root) {
         tools::clear(G);
         time = 0;
+        int currentDepth = G.g;
+        vector<int> currentLayer;
         queue<int> Q;
         Q.push(root);
         G.visited[root] = true;
@@ -78,8 +80,23 @@ namespace Traversals {
             for (int u : G.Adj[v]) {
                 if (!G.visited[u]) {
                     G.d[u] = G.d[v] + 1;
-                    if (G.d[u] == g + 1) { //TODO check if g or g+1
-                        return;
+//                    if (G.d[u] == G.g) { //TODO check if g or g+1
+//                        return;
+//                    }
+                    if (G.d[u] > currentDepth) {
+                        if (currentLayer.empty()) {
+                            currentDepth++;
+                        } else {
+                            int randomClosestVertex =  currentLayer.at(tools::random(0, currentLayer.size() - 1));
+                            G.connect(root, randomClosestVertex);
+                            return true;
+                        }
+                    }
+                    if (currentDepth == G.n) return false;
+                    if (G.d[u] == currentDepth) {
+                        if (G.Adj[u].size() == 2) {
+                            currentLayer.push_back(u);
+                        }
                     }
                     G.visited[u] = true;
                     G.visited_track.push_back(u);
@@ -87,15 +104,15 @@ namespace Traversals {
                 }
             }
         }
+        return false;
     }
 
-    bool solve(Graph &G, int g) {
-        g--;
+    bool solve(Graph &G) {
         for (int v = 0; v < G.n; v++) {
             if (v == G.n - 1) return true;
             if (G.Adj[v].size() == 3) continue;
-            bfs(G, v, g);
-            if (!tools::generateEdge(G, v)) return false;
+            if (!bfs(G, v)) return false;
+//            if (!tools::generateEdge(G, v)) return false;
             G.visited[v] = false;
         }
         return true;

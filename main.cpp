@@ -21,18 +21,17 @@ int main() {
     int failure = 0;
     int iteration = 50;
     double avgTime = 0;
-    Graph G(n);
 
 
     clock_t start, end;
+//    for (int n = )
     for (int i=0; i< iteration; i++) {
-        Graph G(n);
+        Graph G(n, g);
         start = clock();
-        solve(G, g)? success++ : failure++;
-        if (success == 1 ){
-            cout << G;
-        }
+        solve(G)? success++ : failure++;
         end = clock();
+        if( success == 1) cout << G;
+        if( failure == 1) cout << G;
         avgTime += double(end - start) / double(CLOCKS_PER_SEC);
 
     }

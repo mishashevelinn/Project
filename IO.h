@@ -31,8 +31,12 @@ namespace io {
             stream << endl;
 
         }
+    }
+
+    void write_stats(const Graph &G, string path) {
 
     }
 }
+
 
 #endif //PROJECT_IO_H
