@@ -41,18 +41,6 @@ namespace Traversals {
             return (*it);
         }
 
-        void clear_queue(queue<int> q) {
-            std::queue<int> empty;
-            std::swap(q, empty);
-        }
-
-        void vanish_vector(Graph & G, vector<int> vec) {
-            for (int v : vec) {
-                G.visited[v] = false;
-                G.d[v] = 0;
-            }
-            vec.clear();
-        }
 
         bool isLegalNeighbour(const Graph &G, int u) { //TODO inline?
             return !G.visited[u];
@@ -63,7 +51,7 @@ namespace Traversals {
             g.availVertexes.erase(g.availVertexes.find(v)); //exclude the vertex itself, no loops in the graph
             int u = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
             while (!isLegalNeighbour(g, u)) { // TODO if we fail to pick the vertex once, there are no available vertexes
-                if (counter == g.V.size()*4){       //Pull out visited in bfs vertexes from available set?
+                if (counter == g.n*4){       //Pull out visited in bfs vertexes from available set?
                     return false;
                 }
                 counter++;
@@ -86,7 +74,7 @@ namespace Traversals {
             int v = Q.front();
             Q.pop();
             time++;
-            for (int u : G.new_Adj[v]) {
+            for (int u : G.Adj[v]) {
                 if (!G.visited[u]) {
                     G.d[u] = G.d[v] + 1;
                     if (G.d[u] == g + 1) { //TODO check if g or g+1
@@ -101,9 +89,9 @@ namespace Traversals {
 
     bool solve(Graph &G, int g) {
         g--;
-        for (int v: G.V) {
-            if (v == G.V.size() - 1) return true;
-            if (G.new_Adj[v].size() == 3) continue;
+        for (int v = 0; v < G.n; v++) {
+            if (v == G.n - 1) return true;
+            if (G.Adj[v].size() == 3) continue;
             bfs(G, v, g);
             if (!tools::generateEdge(G, v)) return false;
             G.visited[v] = false;

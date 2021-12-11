@@ -27,7 +27,7 @@ namespace io {
         for (int v = 0; v < G.n; v++) {
             stream << v << " ----> ";
             std::ostream_iterator<int> output_iterator(stream, " ");
-            std::copy(G.new_Adj[v].begin(), G.new_Adj[v].end(), output_iterator);
+            std::copy(G.Adj[v].begin(), G.Adj[v].end(), output_iterator);
             stream << endl;
 
         }

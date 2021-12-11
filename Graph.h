@@ -17,7 +17,6 @@
 
 #include <bits/stdc++.h>
 
-#include <boost/dynamic_bitset.hpp>
 #include <iostream>
 
 using namespace std;
@@ -25,14 +24,12 @@ using namespace std;
 
 class Graph {
 public:
-    vector<int> V;
-    map<int, vector<int>> Adj;
     set<int> availVertexes;
     vector<bool> visited;
     vector<int> d;
-    vector<boost::dynamic_bitset<>> bitAdj;
     int n;
-    vector<vector<int>> new_Adj;
+    vector<vector<int>> Adj;
+
 
     explicit Graph(int n);
 
@@ -47,59 +44,55 @@ public:
 
 Graph::Graph( int n) {
     Graph::n = n;
-    new_Adj = vector<vector<int>>(n, vector<int>()); // k = 3
+    Adj = vector<vector<int>>(n, vector<int>()); // k = 3
 
-    add(0);
     for (int i = 0; i < n ; i++) {
-        add(i);
         connect(i, (i+1) % n);
+        availVertexes.insert(i);
     }
-    availVertexes = set<int>(V.begin(), V.end());
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
 
+//    visited_track = vector<int>()
 }
 
-
-void Graph::add(int newVertex) {
-    V.push_back(newVertex);
-}
-
-void Graph::disConnect(int a, int b) {
-    vector<int> aAdj = Adj.at(a);
-    vector<int> bAdj = Adj.at(b);
-    for (int i = 0; i < aAdj.size(); i++) {
-        if (aAdj[i] == b) {
-            aAdj.erase(aAdj.begin() + i);
-
-        }
-    }
-    for (int i = 0; i < bAdj.size(); i++) {
-        if (bAdj[i] == a) {
-            bAdj.erase(bAdj.begin() + i);
-        }
-    }
-}
+/**********NEVER__USED******************/
+//void Graph::disConnect(int a, int b) {
+//    vector<int> aAdj = Adj.at(a);
+//    vector<int> bAdj = Adj.at(b);
+//    for (int i = 0; i < aAdj.size(); i++) {
+//        if (aAdj[i] == b) {
+//            aAdj.erase(aAdj.begin() + i);
+//
+//        }
+//    }
+//    for (int i = 0; i < bAdj.size(); i++) {
+//        if (bAdj[i] == a) {
+//            bAdj.erase(bAdj.begin() + i);
+//        }
+//    }
+//}
 
 void Graph::connect(int a, int b) {
-    new_Adj[a].push_back(b);
-    new_Adj[b].push_back(a);
+    Adj[a].push_back(b);
+    Adj[b].push_back(a);
 }
 
-void Graph::print() const {
-    for (auto v: V) {
-        cout << v << " : ";
-        for (auto &u: Adj.at(v)) {
-            cout << u << " ";
-        }
-    }
+/********Deprecated**********/
+//void Graph::print() const {
+//    for (auto v: V) {
+//        cout << v << " : ";
+//        for (auto &u: Adj.at(v)) {
+//            cout << u << " ";
+//        }
+//    }
+//}
 
-}
 std::ostream &operator<<(std::ostream &os, const Graph &rhs) {
 
     for (int v = 0; v < rhs.n; v++) {
         os << v << " ---> ";
-        for (int u: rhs.new_Adj[v]) {
+        for (int u: rhs.Adj[v]) {
             os << u << " ";
         }
         os << endl;
