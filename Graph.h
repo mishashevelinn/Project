@@ -16,6 +16,8 @@
 #define PROJECT_GRAPH_H
 
 #include <bits/stdc++.h>
+#include <boost/dynamic_bitset.hpp>
+
 
 #include <iostream>
 
@@ -30,6 +32,7 @@ public:
     int n;
     vector<vector<int>> Adj;
     vector<int> visited_track;
+    boost::dynamic_bitset<> availV;
 
 
 
@@ -46,15 +49,20 @@ public:
 
 Graph::Graph( int n) {
     Graph::n = n;
+
     Adj = vector<vector<int>>(n, vector<int>()); // k = 3
+    availV = boost::dynamic_bitset<>(n);
 
     for (int i = 0; i < n ; i++) {
         connect(i, (i+1) % n);
         availVertexes.insert(i);
     }
+    availV.set(); //all bits are true ~ all vertexes are available, equivalent to loop
+
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
-    visited_track = vector<int>(32);
+
+    visited_track = vector<int>(32); //keep track of visited in BFS vertexes 2**5
 
 }
 
@@ -93,9 +101,9 @@ void Graph::connect(int a, int b) {
 std::ostream &operator<<(std::ostream &os, const Graph &rhs) {
 
     for (int v = 0; v < rhs.n; v++) {
-        os << v << " ---> ";
+        os << std::setw(3) << v << " ---> ";
         for (int u: rhs.Adj[v]) {
-            os << u << " ";
+            os << std::setw(3) << u << " ";
         }
         os << endl;
     }
