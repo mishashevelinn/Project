@@ -52,6 +52,7 @@ namespace Traversals {
             int u = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
             while (!isLegalNeighbour(g, u)) { // TODO if we fail to pick the vertex once, there are no available vertexes
                 if (counter == g.n*4){       //Pull out visited in bfs vertexes from available set?
+                    g.availVertexes.insert(v);
                     return false;
                 }
                 counter++;
@@ -91,7 +92,7 @@ namespace Traversals {
 
     bool solve(Graph &G, int g) {
         g--;
-        for (int v = 0; v < G.n; v++) {
+        for (int v = 0; v < G.n; v+=(g % G.n)) {
             if (v == G.n - 1) return true;
             if (G.Adj[v].size() == 3) continue;
             bfs(G, v, g);
