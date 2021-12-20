@@ -23,7 +23,7 @@ int main() {
     double avgTime = 0;
     double avgAvailVertex = 0;
     vector<int> N;
-    N = { 1000, 200, 100, 70, 50, 30, 20, 15, 10};
+    N = { 1000,500,400,300, 200, 100, 70, 50, 30, 20, 15, 10};
     ofstream file("res2.txt");
     ofstream fileGraph("graph.txt");
     clock_t start, end;
