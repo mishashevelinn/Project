@@ -16,49 +16,25 @@
 #define PROJECT_GRAPH_H
 
 #include <bits/stdc++.h>
+#include <boost/dynamic_bitset.hpp>
+
+
+#include <iostream>
 
 using namespace std;
 
-enum Color {
-    WHITE,
-    GRAY,
-    BLACK,
-};
-
-string getString(Color color) {
-    switch (color) {
-        case WHITE:
-            return "WHITE";
-        case GRAY:
-            return "GRAY";
-        case BLACK:
-            return "BLACK";
-    }
-    throw;
-}
-
-//class Vertex { //TODO add static counter
-//public:
-//    const int name;
-//    Color color;
-//    int d = 0;
-//    int f = 0;
-//    Vertex *PI;
-//
-//    Vertex() : name(0), color(WHITE), d(INT_MAX), PI(nullptr) {
-//    }
-//
-//    Vertex(const int name) : name(name), color(WHITE) {
-//    }
-//};
 
 class Graph {
 public:
-    vector<int> V;
-    map<int, vector<int>> Adj;
     set<int> availVertexes;
     vector<bool> visited;
     vector<int> d;
+    int n;
+    vector<vector<int>> Adj;
+    vector<int> visited_track;
+    boost::dynamic_bitset<> availV;
+
+
 
     explicit Graph(int n);
 
@@ -69,57 +45,69 @@ public:
     void connect(int, int);
 
     void disConnect(int, int);
-
 };
 
-Graph::Graph(int n) {
-    add(0);
-    for (int i = 1; i < n; i++) {
-        add(i);
-        connect(V[i - 1], V[i]);
+Graph::Graph( int n) {
+    Graph::n = n;
+
+    Adj = vector<vector<int>>(n, vector<int>()); // k = 3
+    availV = boost::dynamic_bitset<>(n);
+
+    for (int i = 0; i < n ; i++) {
+        connect(i, (i+1) % n);
+        availVertexes.insert(i);
     }
-    connect(V[n-1], V[0]);
-    availVertexes = set<int>(V.begin(), V.end());
+    availV.set(); //all bits are true ~ all vertexes are available, equivalent to loop
+
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
 
+    visited_track = vector<int>(32); //keep track of visited in BFS vertexes 2**5
+
 }
 
-
-void Graph::add(int newVertex) {
-    V.push_back(newVertex);
-}
-
-void Graph::disConnect(int a, int b) {
-    vector<int> aAdj = Adj.at(a);
-    vector<int> bAdj = Adj.at(b);
-    for (int i = 0; i < aAdj.size(); i++) {
-        if (aAdj[i] == b) {
-            aAdj.erase(aAdj.begin() + i);
-
-        }
-    }
-    for (int i = 0; i < bAdj.size(); i++) {
-        if (bAdj[i] == a) {
-            bAdj.erase(bAdj.begin() + i);
-        }
-    }
-}
+/**********NEVER__USED******************/
+//void Graph::disConnect(int a, int b) {
+//    vector<int> aAdj = Adj.at(a);
+//    vector<int> bAdj = Adj.at(b);
+//    for (int i = 0; i < aAdj.size(); i++) {
+//        if (aAdj[i] == b) {
+//            aAdj.erase(aAdj.begin() + i);
+//
+//        }
+//    }
+//    for (int i = 0; i < bAdj.size(); i++) {
+//        if (bAdj[i] == a) {
+//            bAdj.erase(bAdj.begin() + i);
+//        }
+//    }
+//}
 
 void Graph::connect(int a, int b) {
     Adj[a].push_back(b);
     Adj[b].push_back(a);
 }
 
-void Graph::print() const {
-    for (auto v: V) {
-        cout << v << " : ";
-        for (auto &u: Adj.at(v)) {
-            cout << u << " ";
-        }
-        cout << "\n";
-    }
+/********Deprecated**********/
+//void Graph::print() const {
+//    for (auto v: V) {
+//        cout << v << " : ";
+//        for (auto &u: Adj.at(v)) {
+//            cout << u << " ";
+//        }
+//    }
+//}
 
+std::ostream &operator<<(std::ostream &os, const Graph &rhs) {
+
+    for (int v = 0; v < rhs.n; v++) {
+        os << std::setw(3) << v << " ---> ";
+        for (int u: rhs.Adj[v]) {
+            os << std::setw(3) << u << " ";
+        }
+        os << endl;
+    }
+    return os;
 }
 
 #endif //PROJECT_GRAPH_H
