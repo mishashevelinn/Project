@@ -23,7 +23,7 @@ namespace io {
     }
 
     void write_graph(const Graph &G, string path) {
-        ofstream stream(path);
+        ofstream stream(path,ios::app);
         for (int v = 0; v < G.n; v++) {
             stream << v << " ----> ";
             std::ostream_iterator<int> output_iterator(stream, " ");
@@ -33,10 +33,10 @@ namespace io {
         }
     }
 
-    void write_stats(const Graph &G, string path) {
-
+    void write_stats(ostream &file, int n, int g, double succ, double time, double availVertex) {
+        file << std::setprecision(3)  << g << " " << n << " " <<  succ  << " " << 1 - succ << " " << time << " " << availVertex << endl;
+//        file << std::setprecision(3) << "\t\tAvg availVertex size=" ;
     }
 }
-
 
 #endif //PROJECT_IO_H
