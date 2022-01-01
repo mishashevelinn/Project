@@ -15,23 +15,20 @@ using namespace io;
 //}
 
 int main() {
-    int n = 1000;
+    int n = 20;
     int g = 5;
     int success = 0;
     int failure = 0;
-    int iteration = 50;
+    int iteration = 10;
     double avgTime = 0;
 
 
     clock_t start, end;
-//    for (int n = )
     for (int i=0; i< iteration; i++) {
         Graph G(n, g);
         start = clock();
-        solve(G)? success++ : failure++;
+        solve(G, g)? success++ : failure++;
         end = clock();
-        if( success == 1) cout << G;
-        if( failure == 1) cout << G;
         avgTime += double(end - start) / double(CLOCKS_PER_SEC);
 
     }

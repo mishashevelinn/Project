@@ -26,14 +26,13 @@ using namespace std;
 
 class Graph {
 public:
-    set<int> availVertexes;
     vector<bool> visited;
     vector<int> d;
     int n;
     int g;
     vector<vector<int>> Adj;
     vector<int> visited_track;
-    boost::dynamic_bitset<> availV;
+//    boost::dynamic_bitset<> availV;
 
 
 
@@ -49,13 +48,10 @@ Graph::Graph( int n, int g) {
     Graph::g = g;
 
     Adj = vector<vector<int>>(n, vector<int>()); // k = 3
-    availV = boost::dynamic_bitset<>(n);
 
     for (int i = 0; i < n ; i++) {
         connect(i, (i+1) % n);
-        availVertexes.insert(i);
     }
-    availV.set(); //all bits are true ~ all vertexes are available, equivalent to loop
 
     visited = vector<bool>(n, false);
     d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?

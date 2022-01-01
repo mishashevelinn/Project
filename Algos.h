@@ -28,47 +28,30 @@ namespace Traversals {
             std::random_device rd;     // only used once to initialise (seed) engine
             std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
             std::uniform_int_distribution<int> uni(min, max); // guaranteed unbiased
-
             auto random_integer = uni(rng);
             return random_integer;
         }
 
-        int randomVertex(set<int> s) {
-            auto it = std::begin(s);
-            int n = random(0, s.size() - 1);
-            // 'advance' the iterator n times
-            std::advance(it,n);
-            return (*it);
-        }
-
-
-        bool isLegalNeighbour(const Graph &G, int u) { //TODO inline?
-            return !G.visited[u];
+        bool isLegalNeighbour(const Graph &G, int u) {
+            return (!G.visited[u] && (G.Adj[u].size() < 3));
         }
 
         bool generateEdge(Graph &g, int v) {
-            int counter = 0;
-            g.availVertexes.erase(g.availVertexes.find(v)); //exclude the vertex itself, no loops in the graph
-            int u = randomVertex(g.availVertexes);     //randomly choose from the set of available vertexes
-            while (!isLegalNeighbour(g, u)) { // TODO if we fail to pick the vertex once, there are no available vertexes
-                if (counter == g.n*4){       //Pull out visited in bfs vertexes from available set?
-                    return false;
+            vector<int> availVertex;
+            for (int vertex = 0; vertex < g.n; vertex++){
+                if (isLegalNeighbour(g, vertex)){
+                    availVertex.push_back(vertex);
                 }
-                counter++;
-                u = randomVertex(g.availVertexes);
             }
-            g.connect(v, u);
-
-            g.availVertexes.erase(g.availVertexes.find(u));
+            if (availVertex.empty()) return false;
+            int u = random(0, availVertex.size() - 1);
+            g.connect(v, availVertex[u]);
             return true;
         }
     }
 
-    bool bfs(Graph &G, int root) {
+    void bfs(Graph &G, int root, int g) {
         tools::clear(G);
-        time = 0;
-        int currentDepth = G.g;
-        vector<int> currentLayer;
         queue<int> Q;
         Q.push(root);
         G.visited[root] = true;
@@ -76,44 +59,37 @@ namespace Traversals {
         while (!Q.empty()) {
             int v = Q.front();
             Q.pop();
-            time++;
             for (int u : G.Adj[v]) {
                 if (!G.visited[u]) {
                     G.d[u] = G.d[v] + 1;
-//                    if (G.d[u] == G.g) { //TODO check if g or g+1
-//                        return;
-//                    }
-                    if (G.d[u] > currentDepth) {
-                        if (currentLayer.empty()) {
-                            currentDepth++;
-                        } else {
-                            int randomClosestVertex =  currentLayer.at(tools::random(0, currentLayer.size() - 1));
-                            G.connect(root, randomClosestVertex);
-                            return true;
-                        }
-                    }
-                    if (currentDepth == G.n) return false;
-                    if (G.d[u] == currentDepth) {
-                        if (G.Adj[u].size() == 2) {
-                            currentLayer.push_back(u);
-                        }
-                    }
                     G.visited[u] = true;
                     G.visited_track.push_back(u);
+                    if (G.d[u] == g-1) return;
                     Q.push(u);
                 }
             }
         }
-        return false;
+    }
+    vector<int> getRandOrder(Graph &g) {
+        vector<int> order;
+        for (int i = 0; i< g.n; i++){
+            order.push_back(i);
+        }
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine e(seed);
+        std::shuffle(order.begin(), order.end(), e);
+        return order;
     }
 
-    bool solve(Graph &G) {
-        for (int v = 0; v < G.n; v++) {
-            if (v == G.n - 1) return true;
-            if (G.Adj[v].size() == 3) continue;
-            if (!bfs(G, v)) return false;
-//            if (!tools::generateEdge(G, v)) return false;
-            G.visited[v] = false;
+    bool solve(Graph &G, int g) {
+        vector<int> random_vertex_order = getRandOrder(G);
+
+        for (int v: random_vertex_order){
+            if (G.Adj[v].size() != 3) {
+                bfs(G, v, g);
+                if (!tools::generateEdge(G, v)) return false;
+                G.visited[v] = false;
+            }
         }
         return true;
     }
