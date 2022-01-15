@@ -37,17 +37,17 @@ namespace Traversals {
             return (!G.visited[u] && (G.Adj[u].size() < 3));
         }
 
-        bool generateEdge(Graph &g, int v) {
+        int generateEdge(Graph &g, int v) {
             vector<int> availVertex;
             for (int vertex = 0; vertex < g.n; vertex++){
                 if (isLegalNeighbour(g, vertex)){
                     availVertex.push_back(vertex);
                 }
             }
-            if (availVertex.empty()) return false;
+            if (availVertex.empty()) return -1;
             int u = random(0, availVertex.size() - 1);
             g.connect(v, availVertex[u]);
-            return true;
+            return availVertex[u];
         }
     }
 
@@ -82,14 +82,33 @@ namespace Traversals {
         return order;
     }
 
+    void updateQueue(queue<int> &q, Graph &G, int v, int u) {
+        int v_neighbour1 = G.Adj[v][0];
+        int v_neighbour2 = G.Adj[v][1];
+        int u_neighbour1 = G.Adj[u][0];
+        int u_neighbour2 = G.Adj[u][1];
+        if (G.Adj[v_neighbour1].size() != 3) q.push(v_neighbour1);
+        if (G.Adj[v_neighbour2].size() != 3) q.push(v_neighbour2);
+        if (G.Adj[u_neighbour1].size() != 3) q.push(u_neighbour1);
+        if (G.Adj[u_neighbour2].size() != 3) q.push(u_neighbour2);
+    }
+
+
     bool solve(Graph &G, int g) {
         vector<int> random_vertex_order = getRandOrder(G);
-
-        for (int v: random_vertex_order){
-            if (G.Adj[v].size() != 3) {
-                bfs(G, v, g);
-                if (!tools::generateEdge(G, v)) return false;
-                G.visited[v] = false;
+        for (int vertex: random_vertex_order) {
+            queue<int> new_vertex_order;
+            new_vertex_order.push(vertex);
+            while (!new_vertex_order.empty()) {
+                int v = new_vertex_order.front();
+                new_vertex_order.pop();
+                if (G.Adj[v].size() != 3) {
+                    bfs(G, v, g);
+                    int u = tools::generateEdge(G, v);
+                    if (u == -1) return false;
+                    G.visited[v] = false;
+                    updateQueue(new_vertex_order, G, v, u);
+                }
             }
         }
         return true;
