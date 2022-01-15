@@ -22,6 +22,7 @@ namespace Traversals {
                 G.visited[v] = false;
                 G.d[v] = 0;
             }
+            G.visited_track.clear();
         }
 
         int random(int min, int max) {
@@ -86,6 +87,7 @@ namespace Traversals {
         vector<int> random_vertex_order = getRandOrder(G);
 
         for (int v: random_vertex_order){
+
             if (G.Adj[v].size() != 3) {
                 bfs(G, v, g);
                 if (!tools::generateEdge(G, v)) return false;

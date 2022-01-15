@@ -33,8 +33,8 @@ namespace io {
         }
     }
 
-    void write_stats(ostream &file, int n, int g, double succ, double time, double availVertex) {
-        file << std::setprecision(3)  << g << " " << n << " " <<  succ  << " " << 1 - succ << " " << time << " " << availVertex << endl;
+    void write_stats(ostream &file, int n, int g, double succ, double time) {
+        file << std::setprecision(3)  << g << " " << n << " " <<  succ  << " " << 1 - succ << " " << time << endl;
 //        file << std::setprecision(3) << "\t\tAvg availVertex size=" ;
     }
 }
