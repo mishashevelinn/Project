@@ -22,6 +22,7 @@ namespace Traversals {
                 G.visited[v] = false;
                 G.d[v] = 0;
             }
+            G.visited.clear();
         }
 
         int random(int min, int max) {
