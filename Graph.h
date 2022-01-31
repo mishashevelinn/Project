@@ -20,19 +20,21 @@
 
 
 #include <iostream>
-
+#define NONE -1
 using namespace std;
+
 
 
 class Graph {
 public:
     vector<bool> visited;
-    vector<int> d;
+    vector<int> d1;
+    vector<int> d2;
     int n;
     int g;
     vector<vector<int>> Adj;
     vector<int> visited_track;
-//    boost::dynamic_bitset<> availV;
+    vector<int> availV;
 
 
 
@@ -51,35 +53,32 @@ Graph::Graph( int n, int g) {
 
     for (int i = 0; i < n ; i++) {
         connect(i, (i+1) % n);
+        availV.push_back(i);
     }
 
     visited = vector<bool>(n, false);
-    d = vector<int>(n, 0); //TODO 32 is enough for bounded DFS, since?
+    d1 = vector<int>(n, 0);
+    d2= vector<int>(n, 0);
 
-    visited_track = vector<int>(32); //keep track of visited in BFS vertexes 2**5
+    visited_track = vector<int>(); //keep track of visited in BFS vertexes 2**5
 
 }
 
 /**********NEVER__USED******************/
-//void Graph::disConnect(int a, int b) {
-//    vector<int> aAdj = Adj.at(a);
-//    vector<int> bAdj = Adj.at(b);
-//    for (int i = 0; i < aAdj.size(); i++) {
-//        if (aAdj[i] == b) {
-//            aAdj.erase(aAdj.begin() + i);
-//
-//        }
-//    }
-//    for (int i = 0; i < bAdj.size(); i++) {
-//        if (bAdj[i] == a) {
-//            bAdj.erase(bAdj.begin() + i);
-//        }
-//    }
-//}
+void Graph::disConnect(int a, int b) {
+    vector<int> aNeighbours = Adj[a];
+    vector<int> bNeighbours = Adj[b];
+    aNeighbours.erase(aNeighbours.erase(std::remove(aNeighbours.begin(), aNeighbours.end(), b), aNeighbours.end()));
+    bNeighbours.erase(bNeighbours.erase(std::remove(bNeighbours.begin(), bNeighbours.end(), a), bNeighbours.end()));
+    if (aNeighbours.size() == 2 ) availV.push_back(a);
+    if (bNeighbours.size() == 2 ) availV.push_back(b);
+}
 
 void Graph::connect(int a, int b) {
     Adj[a].push_back(b);
     Adj[b].push_back(a);
+    if (Adj[a].size() == 3) availV.erase(std::remove(Adj[a].begin(), Adj[a].end(), a), Adj[a].end());
+    if (Adj[b].size() == 3) availV.erase(std::remove(Adj[b].begin(), Adj[b].end(), b), Adj[b].end());
 }
 
 /********Deprecated**********/

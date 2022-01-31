@@ -1,10 +1,12 @@
-#ifndef DFS_H
-#define DFS_H
 
 
 #include "Graph.h"
 #include <queue>
 #include <random>
+
+#ifndef PROJECT_ALGOS_H
+#define PROJECT_ALGOS_H
+
 
 //   DFS(G)
 //   - Time: O(V + E)
@@ -17,10 +19,10 @@ namespace Traversals {
     int iterationCounter = 0;
 
     namespace tools {
-        void clear(Graph &G) {
-            for (int v : G.visited_track) {
+        void clear(Graph &G, vector<int> d) {
+            for (int v = 0; v < G.n; v++) {
                 G.visited[v] = false;
-                G.d[v] = 0;
+                d[v] = 0;
             }
         }
 
@@ -39,8 +41,8 @@ namespace Traversals {
 
         int generateEdge(Graph &g, int v) {
             vector<int> availVertex;
-            for (int vertex = 0; vertex < g.n; vertex++){
-                if (isLegalNeighbour(g, vertex)){
+            for (int vertex = 0; vertex < g.n; vertex++) {
+                if (isLegalNeighbour(g, vertex)) {
                     availVertex.push_back(vertex);
                 }
             }
@@ -49,10 +51,56 @@ namespace Traversals {
             g.connect(v, availVertex[u]);
             return availVertex[u];
         }
+
+        int getValidV(Graph &G, int u) {
+            int v_index;
+            int v;
+            bool isNeighbours;
+            do {
+                isNeighbours = false;
+                v_index = random(0, G.availV.size() - 1);
+                v = G.availV[v_index];
+                for (int i = 0; i < G.Adj[u].size(); i++) {
+
+                    if (G.Adj[u][i] == v) {
+                        isNeighbours = true;
+                        break;
+                    }
+                }
+            } while (v == u || isNeighbours);
+            return v;
+        }
+
+        void replaceEdgeOnCircle(Graph &G, int u, int v, vector<pair<int, int>> edgesOnCilcle) {
+            pair<int, int> edgeToRemove = edgesOnCilcle[random(0, edgesOnCilcle.size() - 1)];
+            G.disConnect(edgeToRemove.first, edgeToRemove.second);
+            G.connect(u, v);
+        }
+
+
+        bool getEdgesOnCircle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCilcle) {
+            int source = u;
+            int dest;
+            while (source != v) {
+                vector<int> source_niegours = G.Adj[source];
+                int numCircles = 0;
+                for (int i = 0; i < source_niegours.size(); i++) {
+                    if (G.d1[source_niegours[i]] + G.d2[source_niegours[i]] < G.g - 1) {
+                        if ( ++numCircles == 2) return false;
+                        dest = source_niegours[i];
+                    }
+                }
+                pair<int, int> edge(source, dest);
+                edgesOnCilcle.push_back(edge);
+                source = dest;
+            }
+            return true;
+        }
     }
 
-    void bfs(Graph &G, int root, int g) {
-        tools::clear(G);
+
+    void bfs(Graph &G, int root, int g, vector<int> &d) {
+        tools::clear(G, d);
         queue<int> Q;
         Q.push(root);
         G.visited[root] = true;
@@ -60,61 +108,72 @@ namespace Traversals {
         while (!Q.empty()) {
             int v = Q.front();
             Q.pop();
-            for (int u : G.Adj[v]) {
+            for (int u: G.Adj[v]) {
                 if (!G.visited[u]) {
-                    G.d[u] = G.d[v] + 1;
+                    d[u] = d[v] + 1;
                     G.visited[u] = true;
                     G.visited_track.push_back(u);
-                    if (G.d[u] == g-1) return;
                     Q.push(u);
                 }
             }
         }
-    }
-    vector<int> getRandOrder(Graph &g) {
-        vector<int> order;
-        for (int i = 0; i< g.n; i++){
-            order.push_back(i);
-        }
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine e(seed);
-        std::shuffle(order.begin(), order.end(), e);
-        return order;
-    }
 
-    void updateQueue(queue<int> &q, Graph &G, int v, int u) {
-        int v_neighbour1 = G.Adj[v][0];
-        int v_neighbour2 = G.Adj[v][1];
-        int u_neighbour1 = G.Adj[u][0];
-        int u_neighbour2 = G.Adj[u][1];
-        if (G.Adj[v_neighbour1].size() != 3) q.push(v_neighbour1);
-        if (G.Adj[v_neighbour2].size() != 3) q.push(v_neighbour2);
-        if (G.Adj[u_neighbour1].size() != 3) q.push(u_neighbour1);
-        if (G.Adj[u_neighbour2].size() != 3) q.push(u_neighbour2);
+
     }
 
 
-    bool solve(Graph &G, int g) {
-        vector<int> random_vertex_order = getRandOrder(G);
-        for (int vertex: random_vertex_order) {
-            queue<int> new_vertex_order;
-            new_vertex_order.push(vertex);
-            while (!new_vertex_order.empty()) {
-                int v = new_vertex_order.front();
-                new_vertex_order.pop();
-                if (G.Adj[v].size() != 3) {
-                    bfs(G, v, g);
-                    int u = tools::generateEdge(G, v);
-                    if (u == -1) return false;
-                    G.visited[v] = false;
-                    updateQueue(new_vertex_order, G, v, u);
-                }
-            }
-        }
-        return true;
+vector<int> getRandOrder(Graph &g) {
+    vector<int> order;
+    for (int i = 0; i < g.n; i++) {
+        order.push_back(i);
     }
-
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine e(seed);
+    std::shuffle(order.begin(), order.end(), e);
+    return order;
 }
 
+void updateQueue(queue<int> &q, Graph &G, int v, int u) {
+    int v_neighbour1 = G.Adj[v][0];
+    int v_neighbour2 = G.Adj[v][1];
+    int u_neighbour1 = G.Adj[u][0];
+    int u_neighbour2 = G.Adj[u][1];
+    if (G.Adj[v_neighbour1].size() != 3) q.push(v_neighbour1);
+    if (G.Adj[v_neighbour2].size() != 3) q.push(v_neighbour2);
+    if (G.Adj[u_neighbour1].size() != 3) q.push(u_neighbour1);
+    if (G.Adj[u_neighbour2].size() != 3) q.push(u_neighbour2);
+}
+
+typedef enum {
+    NO_CIRCLES = 0,
+    SINGLE_CIRCLE = 1,
+} newCirclesOnG;
+
+bool solve(Graph &G, int g, int max_iter) {
+    int iter = 0;
+    while (!G.availV.empty() && iter < max_iter) {
+        int u_index = tools::random(0, G.availV.size() - 1);
+        int u = G.availV[u_index];
+        int v = tools::getValidV(G, u);
+
+        bfs(G, u, g, G.d1);
+
+        if (G.d1[v] >= G.g - 1) {
+            G.connect(v, u);
+        }
+        else {
+            bfs(G, v, g, G.d2);
+            vector<pair<int, int>> edgesOnCilcle = vector<pair<int, int>>();
+            if (tools::getEdgesOnCircle(G, u, v, edgesOnCilcle)) {
+                tools::replaceEdgeOnCircle(G, u, v, edgesOnCilcle);
+            }
+        }
+        iter++;
+
+    }
+    return true;
+}
+
+}
 
 #endif
