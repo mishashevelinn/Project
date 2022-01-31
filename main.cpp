@@ -25,13 +25,13 @@ int main() {
     int max_g = 11;
     double success = 0;
     double failure = 0;
-    double iteration = 1;
+    double iteration = 40;
     double avgTime = 0;
     double avgAvailVertex = 0;
     vector<int> N;
-    int n = 20;
-    int g = 5;
-    int max_iter = 1000;
+    int n = 100000;
+    int g = 20;
+    int max_iter = 5000;
     ofstream file("tmp.txt");
     ofstream fileGraph("graph.txt");
     clock_t start, end;
@@ -43,12 +43,13 @@ int main() {
         } else {
             failure++;
         }
-        cout << success;
-        cout << G;
-        end = clock();
-        avgTime += double(end - start) / double(CLOCKS_PER_SEC);
 
     }
+    cout << success;
+//        cout << G;
+    end = clock();
+    avgTime += double(end - start) / double(CLOCKS_PER_SEC);
+
     avgTime /= iteration;
     io::write_stats(file, n, g, double(success / iteration), avgTime);
     success = 0;

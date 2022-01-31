@@ -3,6 +3,7 @@
 #include "Graph.h"
 #include <queue>
 #include <random>
+#include "IO.h"
 
 #ifndef PROJECT_ALGOS_H
 #define PROJECT_ALGOS_H
@@ -51,7 +52,7 @@ namespace Traversals {
         int count_cycles(Graph &G, int u, int v, int k) {
 
             if (k == 0 && u == v) {
-                cout << "hii";
+                cout << u << " = " << v << " count_cycles_recursion\n";
                 return 1;
             }
             if ((k == 1 || k == 2 || k == 3 || k == 4) && G.isNeighbour(u, v)) {
@@ -104,7 +105,7 @@ namespace Traversals {
             return v;
         }
 
-        void replaceEdgeOnCircle(Graph &G, int u, int v, vector<pair<int, int>> edgesOnCilcle) {
+        void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCilcle) {
             pair<int, int> edgeToRemove = edgesOnCilcle[random(0, edgesOnCilcle.size() - 1)];
             G.disConnect(edgeToRemove.first, edgeToRemove.second);
             G.connect(u, v);
@@ -178,9 +179,21 @@ namespace Traversals {
     }
 
     typedef enum {
-        NO_CIRCLES = 0,
-        SINGLE_CIRCLE = 1,
+        NO_CYCLES = 0,
+        SINGLE_CYCLE = 1,
     } newCirclesOnG;
+
+    bool route_to_edges(list<int> route, vector<pair<int, int>> &edges) {
+        std::list<int>::iterator it;
+        for (it = route.begin(); it != route.end();) { //combina muzara aval ovedet? Tal please approve
+            if ((++it) != route.end()) {
+                --it;
+                edges.emplace_back(*it, *(it++));
+            }
+        }
+        return true;
+    }
+
 
     bool solve(Graph &G, int g, int max_iter) {
         int iter = 0;
@@ -189,27 +202,32 @@ namespace Traversals {
             int u = G.availV[u_index];
             int v = tools::getValidV(G, u);
 
-            int num_cyces = tools::count_cycles(G, u, v, g - 1);
+            int num_cycles = tools::count_cycles(G, u, v, g - 2); //changed to g-2 misha
             tools::clear(G, G.d1);
-            switch (num_cyces) {
-                case NO_CIRCLES:
+            switch (num_cycles) {
+                case NO_CYCLES:
                     G.connect(u, v);
                     break;
-                case SINGLE_CIRCLE:
-                    cout << "found single circle!\n";
+                case SINGLE_CYCLE: {
                     G.findPath(u, v);
-                    G.trace_route(v);
-                    tools::clear(G, G.d1);
-
+                    list<int> route = G.trace_route(v);
+//                    io::print_route(route, u, v);
+                    vector<pair<int, int>> edges;
+                    route_to_edges(route, edges);
+                    tools::replaceEdgeOnCycle(G, u, v, edges);
                     break;
+                }
                 default:
                     break;
             }
             iter++;
         }
-        return iter != max_iter;
+        return iter !=max_iter;
     }
+
+
 }
+
 
 
 #endif

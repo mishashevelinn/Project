@@ -23,7 +23,7 @@ namespace io {
     }
 
     void write_graph(const Graph &G, string path) {
-        ofstream stream(path,ios::app);
+        ofstream stream(path, ios::app);
         for (int v = 0; v < G.n; v++) {
             stream << v << " ----> ";
             std::ostream_iterator<int> output_iterator(stream, " ");
@@ -34,9 +34,25 @@ namespace io {
     }
 
     void write_stats(ostream &file, int n, int g, double succ, double time) {
-        file << std::setprecision(3)  << g << " " << n << " " <<  succ  << " " << 1 - succ << " " << time << endl;
+        file << std::setprecision(3) << g << " " << n << " " << succ << " " << 1 - succ << " " << time << endl;
 //        file << std::setprecision(3) << "\t\tAvg availVertex size=" ;
     }
-}
 
+    void print_route(std::list<int> route, int u, int v) {
+        std::list<int>::iterator it;
+        cout << "route (" << u << " " << v << ")\n";
+        for (it = route.begin(); it != route.end(); it++) {
+            cout << *it << " ";
+        }
+        cout << "\n";
+
+    }
+
+    void print_edges(vector<pair<int, int>> edges) {
+        vector<pair<int, int>>::iterator it;
+        for (it = edges.begin(); it != edges.end(); it++) {
+            cout << "(" << (*it).first << "," << (*it).second << "), ";
+        }
+    }
+}
 #endif //PROJECT_IO_H

@@ -49,7 +49,7 @@ public:
 
     void findPath(int start, int stop);
 
-    void trace_route(int stop);
+    list<int> trace_route(int stop);
 };
 
 Graph::Graph( int n, int g) {
@@ -101,7 +101,7 @@ void Graph::findPath(int start, int end){ //statement: if there is a single path
     }
 }
 
-void Graph::trace_route(int stop){
+list<int> Graph::trace_route(int stop){
     list<int> route;
     int w = stop;
     //PI[start] always -1
@@ -110,10 +110,10 @@ void Graph::trace_route(int stop){
         w = PI[w];
     }
     route.push_front(w);
-
-    for(int v : route){
-        cout << v << " --> ";
-    }
+    return route;
+//    for(int v : route){
+//        cout << v << " --> ";
+//    }
 }
 bool Graph::isNeighbour(int u,int v){
     for(int i : Adj[u]){
@@ -125,12 +125,12 @@ bool Graph::isNeighbour(int u,int v){
 }
 
 void Graph::disConnect(int a, int b) {
-    vector<int> aNeighbours = Adj[a];
-    vector<int> bNeighbours = Adj[b];
-    aNeighbours.erase(aNeighbours.erase(std::remove(aNeighbours.begin(), aNeighbours.end(), b), aNeighbours.end()));
-    bNeighbours.erase(bNeighbours.erase(std::remove(bNeighbours.begin(), bNeighbours.end(), a), bNeighbours.end()));
-    if (aNeighbours.size() == 2 ) availV.push_back(a);
-    if (bNeighbours.size() == 2 ) availV.push_back(b);
+//    vector<int> aNeighbours = Adj[a];
+//    vector<int> bNeighbours = Adj[b];
+    Adj[a].erase(std::remove(Adj[a].begin(), Adj[a].end(), b), Adj[a].end());
+    Adj[b].erase(std::remove(Adj[b].begin(), Adj[b].end(), a), Adj[b].end());
+    if (Adj[a].size() == 2 ) availV.push_back(a);
+    if (Adj[b].size() == 2 ) availV.push_back(b);
 }
 
 void Graph::connect(int a, int b) {
