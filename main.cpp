@@ -3,9 +3,23 @@
 #include "Algos.h"
 #include "IO.h"
 
-using namespace Traversals;
-using namespace io;
+//    Graph G(20, 6);
+//    G.connect(0, 6);
+//    G.connect(0, 12);
+//    int k = 4;
+//    cout << G;
+//    int cycles = tools::count_cycles(G, 0, 10, k);
+//    tools::clear(G, G.d1);
+//    G.findPath(0, 10);
+//
+//    G.trace_route(10);
+//    cout << "with keshet (0,10) mispar maagalim ktim mi " << k+1 << " = "<< cycles;
+//
 
+using namespace Traversals;
+
+
+using namespace io;
 
 int main() {
     int max_g = 11;
@@ -15,9 +29,9 @@ int main() {
     double avgTime = 0;
     double avgAvailVertex = 0;
     vector<int> N;
-    int n = 50;
+    int n = 20;
     int g = 5;
-    int max_iter = 100S;
+    int max_iter = 1000;
     ofstream file("tmp.txt");
     ofstream fileGraph("graph.txt");
     clock_t start, end;

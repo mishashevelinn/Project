@@ -30,6 +30,7 @@ public:
     vector<bool> visited;
     vector<int> d1;
     vector<int> d2;
+    vector<int> PI;
     int n;
     int g;
     vector<vector<int>> Adj;
@@ -43,11 +44,18 @@ public:
     void connect(int, int);
 
     void disConnect(int, int);
+
+    bool isNeighbour(int u, int v);
+
+    void findPath(int start, int stop);
+
+    void trace_route(int stop);
 };
 
 Graph::Graph( int n, int g) {
     Graph::n = n;
     Graph::g = g;
+    Graph:: PI = vector<int>(n, -1);
 
     Adj = vector<vector<int>>(n, vector<int>()); // k = 3
 
@@ -63,8 +71,59 @@ Graph::Graph( int n, int g) {
     visited_track = vector<int>(); //keep track of visited in BFS vertexes 2**5
 
 }
+void Graph::findPath(int start, int end){ //statement: if there is a single path of length less then g - 2, it's the shortest path
+    //Create queue and declare variables
+    queue<int> Queue;
+    bool reached_end = false;
+    //Visit start node and add to queue
+    visited[start] = true;
+    Queue.push(start);
 
-/**********NEVER__USED******************/
+    //BFS until queue is empty
+    while(!Queue.empty() && !reached_end){
+        //Pop a node from queue for search operation
+        int current_node=Queue.front();
+        Queue.pop();
+        //Loop through neighbors nodes to find the 'end' node
+        for(int node: Adj[current_node]){
+            if(!visited[node]){
+                //Visit and add neighbor nodes to the queue
+                visited[node] = true;
+                Queue.push(node);
+                PI[node] = current_node;
+                //stop BFS if the end node is found
+                if(node == end){
+                    reached_end = true;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Graph::trace_route(int stop){
+    list<int> route;
+    int w = stop;
+    //PI[start] always -1
+    while(PI[w]!= -1){
+        route.push_front(w);
+        w = PI[w];
+    }
+    route.push_front(w);
+
+    for(int v : route){
+        cout << v << " --> ";
+    }
+}
+bool Graph::isNeighbour(int u,int v){
+    for(int i : Adj[u]){
+        if (i == v){
+            return true;
+        }
+    }
+    return false;
+}
+
 void Graph::disConnect(int a, int b) {
     vector<int> aNeighbours = Adj[a];
     vector<int> bNeighbours = Adj[b];
@@ -77,8 +136,8 @@ void Graph::disConnect(int a, int b) {
 void Graph::connect(int a, int b) {
     Adj[a].push_back(b);
     Adj[b].push_back(a);
-    if (Adj[a].size() == 3) availV.erase(std::remove(Adj[a].begin(), Adj[a].end(), a), Adj[a].end());
-    if (Adj[b].size() == 3) availV.erase(std::remove(Adj[b].begin(), Adj[b].end(), b), Adj[b].end());
+    if (Adj[a].size() == 3) availV.erase(std::remove(availV.begin(), availV.end(), a), availV.end());
+    if (Adj[b].size() == 3) availV.erase(std::remove(availV.begin(), availV.end(), b), availV.end());
 }
 
 /********Deprecated**********/
