@@ -16,7 +16,7 @@
 //    cout << "with keshet (0,10) mispar maagalim ktim mi " << k+1 << " = "<< cycles;
 //
 
-using namespace Traversals;
+using namespace tools;
 
 
 using namespace io;
@@ -25,26 +25,29 @@ int main() {
     int max_g = 11;
     double success = 0;
     double failure = 0;
-    double iteration = 40;
+    double iteration = 2;
     double avgTime = 0;
     double avgAvailVertex = 0;
     vector<int> N;
-    int n = 100000;
-    int g = 20;
-    int max_iter = 5000;
+    int n = 20;
+    int g = 5;
+    int max_iter = (int)pow(n ,3);
     ofstream file("tmp.txt");
     ofstream fileGraph("graph.txt");
     clock_t start, end;
-    for (int i = 0; i < iteration; i++) {
-        Graph G(n, g);
-        start = clock();
-        if (solve(G, g, max_iter)) {
-            success++;
-        } else {
-            failure++;
-        }
+        for (int i = 0; i < iteration; i++) {
+            Graph G(n, g);
+            start = clock();
+            if (tools::solve(G, g, max_iter)) {
+                success++;
+                if (success == 1) {
+                    fileGraph << G;
+                }
+            } else {
+                failure++;
+            }
 
-    }
+        }
     cout << success;
 //        cout << G;
     end = clock();
