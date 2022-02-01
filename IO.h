@@ -22,13 +22,12 @@ namespace io {
         }
     }
 
-    void write_graph(const Graph &G, string path) {
-        ofstream stream(path, ios::app);
+    void write_graph(const Graph &G, ostream &file) {
         for (int v = 0; v < G.n; v++) {
-            stream << v << " ----> ";
-            std::ostream_iterator<int> output_iterator(stream, " ");
+            file << v << " ";
+            std::ostream_iterator<int> output_iterator(file, " ");
             std::copy(G.Adj[v].begin(), G.Adj[v].end(), output_iterator);
-            stream << endl;
+            file << endl;
 
         }
     }
@@ -38,13 +37,13 @@ namespace io {
 //        file << std::setprecision(3) << "\t\tAvg availVertex size=" ;
     }
 
-    void print_route(std::list<int> route, int u, int v) {
+    void print_route(std::list<int> route, int u, int v, ostream& os = cout) {
         std::list<int>::iterator it;
-        cout << "route (" << u << " " << v << ")\n";
+        os << "route (" << u << " " << v << ")\n";
         for (it = route.begin(); it != route.end(); it++) {
-            cout << *it << " ";
+            os << *it << " ";
         }
-        cout << "\n";
+        os << "\n";
 
     }
 

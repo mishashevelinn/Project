@@ -25,36 +25,38 @@ int main() {
     int max_g = 11;
     double success = 0;
     double failure = 0;
-    double iteration = 2;
+    double iteration = 10;
     double avgTime = 0;
     double avgAvailVertex = 0;
     vector<int> N;
     int n = 20;
-    int g = 5;
-    int max_iter = (int)pow(n ,3);
-    ofstream file("tmp.txt");
+    int g = 10;
+    int max_iter = (int)pow(n ,2);
+//    ofstream file("tmp.txt");
     ofstream fileGraph("graph.txt");
     clock_t start, end;
-        for (int i = 0; i < iteration; i++) {
-            Graph G(n, g);
-            start = clock();
-            if (tools::solve(G, g, max_iter)) {
-                success++;
-                if (success == 1) {
-                    fileGraph << G;
-                }
-            } else {
-                failure++;
+    for (int i = 0; i < iteration; i++) {
+        Graph G(n, g);
+        start = clock();
+        if (tools::solve(G, g, max_iter)) {
+            success++;
+            cout << "Try number " << i+1 << ": Succeed!\n";
+            if(success == 1){
+                write_graph(G,  fileGraph);
             }
-
+        } else {
+            failure++;
+            cout << "Try number " << i+1 << ": Failed!\n";
         }
+
+    }
     cout << success;
 //        cout << G;
     end = clock();
     avgTime += double(end - start) / double(CLOCKS_PER_SEC);
 
     avgTime /= iteration;
-    io::write_stats(file, n, g, double(success / iteration), avgTime);
+//    io::write_stats(file, n, g, double(success / iteration), avgTime);
     success = 0;
     failure = 0;
     avgTime = 0;
