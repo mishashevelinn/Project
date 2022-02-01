@@ -106,27 +106,28 @@ namespace tools {
         //removing random edge from the short cycle and adding the edge (u,v)
 
         pair<int, int> edgeToRemove = edgesOnCilcle[random(0, edgesOnCilcle.size() - 1)];
-        cout << "replacing one of edges:\n";
-        io::print_edges(edgesOnCilcle);
+//        cout << "replacing one of edges:\n";
+//        io::print_edges(edgesOnCilcle);
         G.disConnect(edgeToRemove.first, edgeToRemove.second);
 
-        tools::clear(G, G.d1);
-        int cycles = tools::count_cycles(G, u, v, G.g-2);
-        if (cycles == 1){
-            if(G.isNeighbour(u,v) != -1){
-                cout << "THEY ARE NEIGHBOURS" <<endl;
-            }
-            ofstream file("After edge removal");
-            cout << "edge " << "(" << edgeToRemove.first<<','<<edgeToRemove.second<<") was removed\n";
-            io::write_graph(G, file);
-            G.findPath(u, v);
-            list<int> route = G.trace_route(u,v);
-            cout  << "\nbut exists route: ";
-            io::print_route(route, u,v);
-            exit(0);
-
-        }
-        cout << "num cycles after disconnect: " << cycles << endl;
+        ///DEBUG///
+//        tools::clear(G, G.d1);
+//        int cycles = tools::count_cycles(G, u, v, G.g-2);
+//        if (cycles == 1){
+//            if(G.isNeighbour(u,v) != -1){
+//                cout << "THEY ARE NEIGHBOURS" <<endl;
+//            }
+//            ofstream file("After edge removal");
+//            cout << "edge " << "(" << edgeToRemove.first<<','<<edgeToRemove.second<<") was removed\n";
+//            io::write_graph(G, file);
+//            G.findPath(u, v);
+//            list<int> route = G.trace_route(u,v);
+//            cout  << "\nbut exists route: ";
+//            io::print_route(route, u,v);
+//            exit(0);
+//
+//        }
+//        cout << "num cycles after disconnect: " << cycles << endl;
 
         G.connect(u, v);
     }
@@ -165,11 +166,10 @@ namespace tools {
                 case SINGLE_CYCLE: {
                     G.findPath(u, v); //shortest path closing the single cycle with E+(u,v),
                     list<int> route = G.trace_route(u, v);
-                    io::print_route(route,u,v);
+//                    io::print_route(route,u,v);
 
                     vector<pair<int, int>> edges;
                     route_to_edges(route, edges);
-//                    io::print_edges(edges);
                     tools::replaceEdgeOnCycle(G, u, v, edges);
                     tools:clear(G, G.d1);
                     break;

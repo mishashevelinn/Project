@@ -108,12 +108,12 @@ void Graph::disConnect(int u, int v) {
     int idx_u = isNeighbour(v, u);
     Adj[u].erase(Adj[u].begin() + idx_v);
     Adj[v].erase(Adj[v].begin() + idx_u);
-    cout << "trying to disconnect" << "(" << u << "," << v << ")\n";
-    cout << "elements of " << "Adj[" << v << "]\n";
-    for (int i = 0; i < Adj[v].size(); i++) {
-        cout << Adj[v][i] << " ";
-    }
-    cout << endl;
+//    cout << "trying to disconnect" << "(" << u << "," << v << ")\n";
+//    cout << "elements of " << "Adj[" << v << "]\n";
+//    for (int i = 0; i < Adj[v].size(); i++) {
+//        cout << Adj[v][i] << " ";
+//    }
+//    cout << endl;
     if (Adj[u].size() == 2) availV.push_back(u);
     if (Adj[v].size() == 2) availV.push_back(v);
 }

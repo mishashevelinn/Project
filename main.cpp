@@ -30,7 +30,7 @@ int main() {
     double avgAvailVertex = 0;
     vector<int> N;
     int n = 20;
-    int g = 10;
+    int g = 5;
     int max_iter = (int)pow(n ,2);
 //    ofstream file("tmp.txt");
     ofstream fileGraph("graph.txt");
