@@ -23,7 +23,7 @@ public:
     int g;
     vector<vector<int>> Adj;
     vector<int> visited_track;
-    vector<int> availV;
+    vector<int> legalDeg;
 
 
     explicit Graph(int n, int g);
@@ -48,7 +48,7 @@ Graph::Graph(int n, int g) {
 
     for (int i = 0; i < n; i++) {
         connect(i, (i + 1) % n);
-        availV.push_back(i);
+        legalDeg.push_back(i);
     }
 
     visited = vector<bool>(n, false);
@@ -61,6 +61,7 @@ Graph::Graph(int n, int g) {
 
 void Graph::findPath(int start,
                      int end) { //statement: if there is a single path of length less than g - 2, it's the shortest path
+//    tools::clear(G, G.d1);
     queue<int> Queue;
     bool reached_end = false;
     visited[start] = true;
@@ -114,15 +115,15 @@ void Graph::disConnect(int u, int v) {
 //        cout << Adj[v][i] << " ";
 //    }
 //    cout << endl;
-    if (Adj[u].size() == 2) availV.push_back(u);
-    if (Adj[v].size() == 2) availV.push_back(v);
+    if (Adj[u].size() == 2) legalDeg.push_back(u);
+    if (Adj[v].size() == 2) legalDeg.push_back(v);
 }
 
 void Graph::connect(int a, int b) {
     Adj[a].push_back(b);
     Adj[b].push_back(a);
-    if (Adj[a].size() == 3) availV.erase(std::remove(availV.begin(), availV.end(), a), availV.end());
-    if (Adj[b].size() == 3) availV.erase(std::remove(availV.begin(), availV.end(), b), availV.end());
+    if (Adj[a].size() == 3) legalDeg.erase(std::remove(legalDeg.begin(), legalDeg.end(), a), legalDeg.end());
+    if (Adj[b].size() == 3) legalDeg.erase(std::remove(legalDeg.begin(), legalDeg.end(), b), legalDeg.end());
 }
 
 

@@ -2,6 +2,7 @@
 #include "Graph.h"
 #include "Algos.h"
 #include "IO.h"
+#include <string>
 
 //    Graph G(20, 6);
 //    G.connect(0, 6);
@@ -22,44 +23,55 @@ using namespace tools;
 using namespace io;
 
 int main() {
-    int max_g = 11;
+    string dir = " ../data/Hill_Climber/TEST_g=5_n=40/";
     double success = 0;
     double failure = 0;
-    double iteration = 10;
     double avgTime = 0;
-    double avgAvailVertex = 0;
-    vector<int> N;
-    int n = 20;
+    vector<int> N = {10};
     int g = 5;
-    int max_iter = (int)pow(n ,2);
-//    ofstream file("tmp.txt");
-    ofstream fileGraph("graph.txt");
-    clock_t start, end;
-    for (int i = 0; i < iteration; i++) {
-        Graph G(n, g);
-        start = clock();
-        if (tools::solve(G, g, max_iter)) {
-            success++;
-            cout << "Try number " << i+1 << ": Succeed!\n";
-            if(success == 1){
-                write_graph(G,  fileGraph);
+//    int g_max = 6;
+    double iteration = 10000;
+
+    string statfile_name = "../data/Hill_Climber/TEST_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats.txt";
+    ofstream statfile(statfile_name);
+    for (int n: N) {
+        int max_iter_solve = (int) pow(n, 4);
+        clock_t start, end;
+        success = 0;
+        failure = 0;
+        avgTime = 0;
+        int num_avail = 0;
+        for (int i = 0; i < iteration; i++) {
+            Graph G(n, g);
+            start = clock();
+            if (tools::solve(G, g, max_iter_solve)) {
+                success++;
+                string gstr = to_string(g);
+                string nstr = to_string(n);
+
+                string name =
+                        "../data/Hill_Climber/TEST_g=5_n=10-10/solution_g=" + to_string(g) + "_n=" + to_string(n) +
+                        "_" + to_string((int) success) + ".txt";
+                ofstream fileGraph(name);
+                io::write_graph(G, fileGraph);
+                cout << "+" << endl;
+
+            } else {
+                failure++;
+                cout << "-" << endl;
+                end = clock();
+
             }
-        } else {
-            failure++;
-            cout << "Try number " << i+1 << ": Failed!\n";
+            avgTime += double(end - start) / double(CLOCKS_PER_SEC);
+            num_avail += (int) G.legalDeg.size();
+//            cout << "g = " << to_string(g) << " n = " << to_string(n) << "iter no " << i << "/" << iteration - 1 << endl;
+
         }
+        cout << success << endl;
+        io::write_stats(statfile, n, g, double(success / iteration), avgTime / iteration,
+                        double(num_avail / failure)); //double(success / i) ?
 
     }
-    cout << success;
-//        cout << G;
-    end = clock();
-    avgTime += double(end - start) / double(CLOCKS_PER_SEC);
 
-    avgTime /= iteration;
-//    io::write_stats(file, n, g, double(success / iteration), avgTime);
-    success = 0;
-    failure = 0;
-    avgTime = 0;
-    avgAvailVertex = 0;
     return 0;
 }
