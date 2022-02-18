@@ -15,7 +15,7 @@ Create issue for task management
 3. bug in `disconnect()` `sigmentation fault` resolved
 
 *Hill climber:*
-1. find how many circles less than g there were if new
+1. find how many cycles c, s.t len(c) < g there were if new
 random edge (u,v) was added with `count_cycles(u,v)`
 
 2. if there are no short cycles, adding new edge `connect(u,v)`
@@ -23,9 +23,9 @@ random edge (u,v) was added with `count_cycles(u,v)`
 3. if we found a single cycle,
 using the statement:
 
-    **If there is a single path of length less than g - 2, it's the shortest path.**
+    **If there is a single path of length less than g - 1, it's the shortest path.**
 
-    we recognize it as set of edges from which random edge is removed `replaceEdgeOnCycle()`,
+    we recognize this path as set of edges from which random edge is removed `replaceEdgeOnCycle()`,
 
     and the edge `(u,v)` is added to `E` with `connect(u,v)`
 
