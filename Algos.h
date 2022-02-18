@@ -40,34 +40,32 @@ namespace tools {
     }
 
     bool isLegalNeighbour(const Graph &G, int u) {
-        //not visited by bfs and has 2 neighbours
+        //not visited by bfs and has 2 neighbours DEPRECATED IN CURRENT VER
         return (!G.visited[u] && (G.Adj[u].size() < 3));
     }
 
     int count_cycles(Graph &G, int u, int v, int k) {
-        //DFS variant
+        //DFS variant count all paths p s.t. len(p) < k. if p[-1] == v => there is a cycle c, len(c) < k
+        // initially k = g - 1
 
 //        if ( u == v) {
-//            cout << "hii";
+//            cout << "u == v state can occur"; //it shouldn't
 //            return 1;
 //        }
-        if (k <= 0)
+        if (k <= 0) //DFS exceed the depth bound, early stop
             return 0;
 
+        //last vertex of the short path is adjacent to u => short cycle detected
         if ((k > 0) && (G.isNeighbour(u, v) != -1)) {
             return 1;
         }
 
 
+        //G.visited is not used to obtain all possible paths(cycles)
         int count = 0;
-//        G.visited[u] = true;
         for (int neighbour: G.Adj[u]) {
-//            if (!G.visited[neighbour]) {
-//                G.visited[neighbour] = true;
                 count += count_cycles(G, neighbour, v, k - 1); //g - 1
                 if(count >= 2) return count;
-//            }
-
         }
 
         return count;
@@ -77,6 +75,7 @@ namespace tools {
     int getValidV(Graph &G, int u) {
         //Picks a random vertex v as a candidate for the edge (u,v)
         // valid v should not be adjacent to u and u != v
+        //if v is valid Deg(v) = 2 (if initial graph is Hamiltonian cycle - current version)
         vector<int> optional_neighbours_for_u;
         for (int i = 0; i < G.legalDeg.size(); i++) {
             if ((G.isNeighbour(G.legalDeg[i], u) == -1) && u != G.legalDeg[i]) {
@@ -92,17 +91,17 @@ namespace tools {
     }
 
 
-    void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCilcle) {
-        //Called when single short cycle is detected in the step of hill climber.
+    void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCylcle) {
+        //Invoked when single short cycle is detected in the step of hill climber.
         //removing random edge from the short cycle and adding the edge (u,v)
 
-        pair<int, int> edgeToRemove = edgesOnCilcle[random(0, (int)edgesOnCilcle.size() - 1)];
+        pair<int, int> edgeToRemove = edgesOnCylcle[random(0, (int)edgesOnCylcle.size() - 1)];
 //        cout << "replacing one of edges:\n";
-//        io::print_edges(edgesOnCilcle);
+//        io::print_edges(edgesOnCylcle);
         G.disConnect(edgeToRemove.first, edgeToRemove.second);
 //        assert(G.isNeighbour(edgeToRemove.first, edgeToRemove.second) == -1);
 
-        ///DEBUG///
+       ///DEBUG: after removal of random edge on the cycle the condition should be always FALSE///
 //        tools::clear(G, G.d1);
 //        int cycles = tools::count_cycles(G, u, v, G.g-2);
 //        if (cycles == 1){
@@ -140,23 +139,23 @@ namespace tools {
     bool solve(Graph &G, int g, int max_iter) {
         int iter = 0;
         while (!G.legalDeg.empty() && iter < max_iter) {
-            int u_index = tools::random(0, G.legalDeg.size() - 1);
-            int u = G.legalDeg[u_index];
+            int u_index = tools::random(0, (int)G.legalDeg.size() - 1);
+            int u = G.legalDeg[u_index]; //pick a random u from V s.t. Deg(u) = 2
 
-            int v = tools::getValidV(G, u);
-            if (v == -1) {
+            int v = tools::getValidV(G, u); //pick a random v from V s.t. v is not adjacent to u, deg(v) = 2
+            if (v == -1) { // no candidates for (u,v) in E
                 iter++;
                 continue;
             }
 
-            int num_cycles = tools::count_cycles(G, u, v, g - 2); //changed to g-2 misha
+            int num_cycles = tools::count_cycles(G, u, v, g - 2); //changed from g-1 to g-2 misha
             switch (num_cycles) {
-                case NO_CYCLES:
+                case NO_CYCLES:  // E + {(u,v)} is partial solution
                     G.connect(u, v);
                     break;
-                case SINGLE_CYCLE: {
+                case SINGLE_CYCLE: {  // (u,v) is 1-candidate
                     tools::clear(G, G.d1);
-                    G.findPath(u, v); //shortest path closing the single cycle with E+(u,v),
+                    G.findPath(u, v);  // shortest path closing the single cycle with E+(u,v),
                     list<int> route = G.trace_route(u, v);
 //                    io::print_route(route,u,v);
 
@@ -165,13 +164,12 @@ namespace tools {
                     tools::replaceEdgeOnCycle(G, u, v, edges);
                     break;
                 }
-                default:
+                default:  // (u,v) is k-candidate , k > 1; adding (u,v) to E yields more than 1 short cycle in G
                     break;
             }
             iter++;
         }
-//        cout << "Finish running after " << iter << " iterations" << endl;
-        return iter != max_iter;
+        return iter != max_iter; //TRUE if (for all v in V deg(v) = 3 & no short cycles in G)
     }
 
 

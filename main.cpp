@@ -22,20 +22,39 @@ using namespace tools;
 
 using namespace io;
 
-int main() {
+int main(){
+//    Graph g(10, 6);
+//    g.connect(0,5);
+//
+//    ofstream  file( "test.txt");
+//    io::write_graph(g,file);
+//    int num_cycles = g.countShortCycles();
+//    for(int numPath = 0; numPath < int(g.paths.size()/2); numPath++){
+//        cout << "cycle " + to_string(numPath) + ": ";
+//        for(int v : g.paths[numPath]){
+//            cout << v << " ";
+//        }
+//        cout << endl;
+//    }
+//    cout << num_cycles;
+//    Graph G = Graph();
+//    io::fromTxt("test.txt", G);
+
+
+
     string dir = " ../data/Hill_Climber/TEST_g=5_n=40/";
     double success = 0;
     double failure = 0;
     double avgTime = 0;
-    vector<int> N = {10};
+    vector<int> N = {10, 20, 30};
     int g = 5;
 //    int g_max = 6;
-    double iteration = 10000;
+    double iteration = 100;
 
-    string statfile_name = "../data/Hill_Climber/TEST_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats.txt";
+    string statfile_name = "../data/Hill_Climber/TEST_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats1.txt";
     ofstream statfile(statfile_name);
     for (int n: N) {
-        int max_iter_solve = (int) pow(n, 4);
+        int max_iter_solve = (int) pow(n, 2);
         clock_t start, end;
         success = 0;
         failure = 0;
@@ -50,15 +69,15 @@ int main() {
                 string nstr = to_string(n);
 
                 string name =
-                        "../data/Hill_Climber/TEST_g=5_n=10-10/solution_g=" + to_string(g) + "_n=" + to_string(n) +
+                        "../data/Hill_Climber/TEST_g=5_n=10-30/solution_g=" + to_string(g) + "_n=" + to_string(n) +
                         "_" + to_string((int) success) + ".txt";
                 ofstream fileGraph(name);
                 io::write_graph(G, fileGraph);
-                cout << "+" << endl;
+//                cout << "+" << endl;
 
             } else {
                 failure++;
-                cout << "-" << endl;
+//                cout << "-" << endl;
                 end = clock();
 
             }

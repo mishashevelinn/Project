@@ -1,6 +1,10 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import csv
+import matplotlib
+
+
+# matplotlib.use('qt')
 
 
 def make_hamilton(n):
@@ -30,7 +34,7 @@ def read_graph_prom_txt(path):
 
 
 def draw_graph(G):
-    nx.draw(G, with_labels=True, pos=nx.circular_layout(G))
+    nx.draw(G, with_labels=True, pos=nx.planar_layout(G))
     plt.show()
 
 
@@ -52,6 +56,25 @@ def load_cycles_from_csv(path='data/Hill_Climber/solution_g=9_n=40_1_cycles.csv'
             if len(row) != 0:
                 cycles.append([int(i) for i in row])
     return cycles
+
+
+def BaseDfs(G):
+    stack = list()
+    tree = list()
+    visited = [False] * G.number_of_nodes()
+
+    root = list(G.nodes())[0]
+    stack.append(root)
+    tree.append(root)
+
+    while len(stack) != 0:
+        u = stack.pop()
+        if not visited[u]:
+            visited[u] = True
+            for v in G.neighbors(u):
+                tree.append(v)
+                stack.append(v)
+    return tree
 
 
 def find_all_cycles(G, source=None):
@@ -143,7 +166,12 @@ G = read_graph_prom_txt('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.
 save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # draw_graph(G)
-cycles = find_short_cycles(find_all_cycles(G), 5)
+
+# G = read_graph_prom_txt('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.txt')
+# save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
+# G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
+# draw_graph(G)
+# cycles = find_short_cycles(find_all_cycles(G), 5)
 # cycles = find_all_cycles(G)
 # save_cycles_csv(cycles, 'data/Hill_Climber/TEST_g=5_n=50/solution_g=5_n=50_1_cycles.csv')
 # short_cycles = find_short_cycles(cycles, 9)

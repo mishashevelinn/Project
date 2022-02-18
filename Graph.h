@@ -4,7 +4,6 @@
 #define PROJECT_GRAPH_H
 
 #include <bits/stdc++.h>
-#include <boost/dynamic_bitset.hpp>
 
 
 #include <iostream>
@@ -27,6 +26,7 @@ public:
 
 
     explicit Graph(int n, int g);
+    Graph();
 
     void connect(int, int);
 
@@ -36,13 +36,20 @@ public:
 
     void findPath(int start, int stop);
 
-    list<int> trace_route(int start,int end);
+    list<int> trace_route(int start, int end);
+
+
+    void findShortCycles(int k, int source, int v, int &count, vector<int>& path);
+
+    int countShortCycles();
+    vector<vector<int>> paths;
 };
 
 Graph::Graph(int n, int g) {
     Graph::n = n;
     Graph::g = g;
     Graph::PI = vector<int>(n, NONE);
+    paths = vector<vector<int>>();
 
     Adj = vector<vector<int>>(n, vector<int>()); // k = 3
 
@@ -104,6 +111,53 @@ int Graph::isNeighbour(int u, int v) {
     return -1;
 }
 
+void Graph::findShortCycles(int k, int source, int v, int &count, vector<int>& path) {
+    visited[v] = true;
+    if (k == 0) {
+        visited[v] = false;
+        if (isNeighbour(source, v) != -1) {
+            //trace rout
+            paths.push_back(path);
+            count++;
+            return;
+        } else
+            return;
+    }
+
+
+    for (int u: Adj[v]) {
+        if (!visited[u]) {
+            vector<int> next_path(path);
+            next_path.push_back(u);
+
+            findShortCycles(k - 1, source, u, count, next_path);
+        }
+    }
+    // marking vert as unvisited to make it
+    // usable again.
+    visited[v] = false;
+}
+
+int Graph::countShortCycles() {
+    // all vertex are marked un-visited initially.
+    for (int i = 0; i < visited.size(); visited[i] = false, i++);
+
+    // Searching for cycle by using v-n+1 vertices
+    int count = 0;
+    for (int i = 0; i < n - (g - 1); i++) {
+        vector<int> init_path;
+        init_path.push_back(i);
+        findShortCycles(g - 1, i, i, count, init_path);
+
+        // ith vertex is marked as visited and
+        // will not be visited again.
+         visited[i] = true;
+    }
+
+    return count / 2;
+}
+
+
 void Graph::disConnect(int u, int v) {
     int idx_v = isNeighbour(u, v);
     int idx_u = isNeighbour(v, u);
@@ -124,6 +178,16 @@ void Graph::connect(int a, int b) {
     Adj[b].push_back(a);
     if (Adj[a].size() == 3) legalDeg.erase(std::remove(legalDeg.begin(), legalDeg.end(), a), legalDeg.end());
     if (Adj[b].size() == 3) legalDeg.erase(std::remove(legalDeg.begin(), legalDeg.end(), b), legalDeg.end());
+}
+
+Graph::Graph() {
+    Graph::PI = vector<int>(n, NONE);
+    paths = vector<vector<int>>();
+
+    Adj = vector<vector<int>>(n, vector<int>());
+
+    visited = vector<bool>(n, false);
+
 }
 
 
