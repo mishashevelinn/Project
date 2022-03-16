@@ -34,7 +34,7 @@ def read_graph_prom_txt(path):
 
 
 def draw_graph(G):
-    nx.draw(G, with_labels=True, pos=nx.planar_layout(G))
+    nx.draw(G, with_labels=True, pos=nx.circular_layout(G))
     plt.show()
 
 
@@ -162,7 +162,8 @@ def find_short_cycles(cycles: list, g: int) -> list[list]:
     return short_cycles
 
 
-G = read_graph_prom_txt('data/Hill_ClimberEvenOdd/solution_g=4_n=20_1.txt')
+G = read_graph_prom_txt('data/HillClimberEvenOdd/solution_g=4_n=20_1.txt')
+draw_graph(G)
 # save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # draw_graph(G)
