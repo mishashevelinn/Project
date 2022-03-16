@@ -42,16 +42,16 @@ int main(){
 
 
 
-    string dir = " ../data/Hill_Climber/TEST_g=5_n=40/";
+    string dir = " ../data/HillClimberEvenOdd/";
     double success = 0;
     double failure = 0;
     double avgTime = 0;
-    vector<int> N = {10, 20, 30};
-    int g = 5;
+    vector<int> N = {20};
+    int g = 4;
 //    int g_max = 6;
-    double iteration = 100;
+    double iteration = 20;
 
-    string statfile_name = "../data/Hill_Climber/TEST_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats1.txt";
+    string statfile_name = "../data/HillClimberEvenOdd/STATS_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats1.txt";
     ofstream statfile(statfile_name);
     for (int n: N) {
         int max_iter_solve = (int) pow(n, 2);
@@ -69,7 +69,7 @@ int main(){
                 string nstr = to_string(n);
 
                 string name =
-                        "../data/Hill_Climber/TEST_g=5_n=10-30/solution_g=" + to_string(g) + "_n=" + to_string(n) +
+                        "../data/HillClimberEvenOdd/solution_g=" + to_string(g) + "_n=" + to_string(n) +
                         "_" + to_string((int) success) + ".txt";
                 ofstream fileGraph(name);
                 io::write_graph(G, fileGraph);

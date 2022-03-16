@@ -78,7 +78,9 @@ namespace tools {
         //if v is valid Deg(v) = 2 (if initial graph is Hamiltonian cycle - current version)
         vector<int> optional_neighbours_for_u;
         for (int i = 0; i < G.legalDeg.size(); i++) {
+            ///*isEven added for DiGraph///*
             if ((G.isNeighbour(G.legalDeg[i], u) == -1) && u != G.legalDeg[i]) {
+                assert(G.isEven(G.legalDeg[i]));
                 optional_neighbours_for_u.push_back(G.legalDeg[i]);
             }
         }
@@ -94,10 +96,14 @@ namespace tools {
     void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCylcle) {
         //Invoked when single short cycle is detected in the step of hill climber.
         //removing random edge from the short cycle and adding the edge (u,v)
+        ///*Changed for Even-Odd version: edges from original cycle can't be removed///*
+        pair<int, int> edgeToRemove;
+        do{
+            edgeToRemove = edgesOnCylcle[random(0, (int)edgesOnCylcle.size() - 1)];
 
-        pair<int, int> edgeToRemove = edgesOnCylcle[random(0, (int)edgesOnCylcle.size() - 1)];
-//        cout << "replacing one of edges:\n";
-//        io::print_edges(edgesOnCylcle);
+        }while(!G.isInitialEdge(edgeToRemove));
+
+        cout << "removing " << edgeToRemove.first << " " << edgeToRemove.second << endl;
         G.disConnect(edgeToRemove.first, edgeToRemove.second);
 //        assert(G.isNeighbour(edgeToRemove.first, edgeToRemove.second) == -1);
 
@@ -142,7 +148,7 @@ namespace tools {
             int u_index = tools::random(0, (int)G.legalDeg.size() - 1);
             int u = G.legalDeg[u_index]; //pick a random u from V s.t. Deg(u) = 2
 
-            int v = tools::getValidV(G, u); //pick a random v from V s.t. v is not adjacent to u, deg(v) = 2
+            int v = tools::getValidV(G, u); //pick a random v from V s.t. v is not adjacent to u, deg(v) = 2, v is Even
             if (v == -1) { // no candidates for (u,v) in E
                 iter++;
                 continue;

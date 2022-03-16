@@ -26,6 +26,7 @@ public:
 
 
     explicit Graph(int n, int g);
+
     Graph();
 
     void connect(int, int);
@@ -39,10 +40,17 @@ public:
     list<int> trace_route(int start, int end);
 
 
-    void findShortCycles(int k, int source, int v, int &count, vector<int>& path);
+    void findShortCycles(int k, int source, int v, int &count, vector<int> &path);
 
     int countShortCycles();
+
     vector<vector<int>> paths;
+
+    bool isEven(int v);
+
+    bool isOdd(int v);
+
+    bool isInitialEdge(pair<int, int> e);
 };
 
 Graph::Graph(int n, int g) {
@@ -55,7 +63,10 @@ Graph::Graph(int n, int g) {
 
     for (int i = 0; i < n; i++) {
         connect(i, (i + 1) % n);
-        legalDeg.push_back(i);
+
+        if (isEven(i)) { ///*Changed for Even-Odd solution///*
+            legalDeg.push_back(i);
+        }
     }
 
     visited = vector<bool>(n, false);
@@ -111,7 +122,24 @@ int Graph::isNeighbour(int u, int v) {
     return -1;
 }
 
-void Graph::findShortCycles(int k, int source, int v, int &count, vector<int>& path) {
+////////////////////////EVEN-ODD VERSION/////////////////////////////////
+bool Graph::isEven(int v) {
+    return !(v % 2);
+}
+
+bool Graph::isOdd(int v) {
+    return !isEven(v);
+}
+
+bool Graph::isInitialEdge(pair<int, int> e) {
+    if ((abs(e.first - e.second) == 1) || abs(e.first - e.second) == n - 1) {
+        return true;
+    }
+    return false;
+}
+
+/********************************************************************/
+void Graph::findShortCycles(int k, int source, int v, int &count, vector<int> &path) {
     visited[v] = true;
     if (k == 0) {
         visited[v] = false;
@@ -133,7 +161,7 @@ void Graph::findShortCycles(int k, int source, int v, int &count, vector<int>& p
             findShortCycles(k - 1, source, u, count, next_path);
         }
     }
-    // marking vert as unvisited to make it
+    // marking v as unvisited to make it
     // usable again.
     visited[v] = false;
 }
@@ -151,7 +179,7 @@ int Graph::countShortCycles() {
 
         // ith vertex is marked as visited and
         // will not be visited again.
-         visited[i] = true;
+        visited[i] = true;
     }
 
     return count / 2;
@@ -183,11 +211,8 @@ void Graph::connect(int a, int b) {
 Graph::Graph() {
     Graph::PI = vector<int>(n, NONE);
     paths = vector<vector<int>>();
-
     Adj = vector<vector<int>>(n, vector<int>());
-
     visited = vector<bool>(n, false);
-
 }
 
 

@@ -89,15 +89,15 @@ namespace io {
     }
 
 
-    void test1() {
-        const char dir_path[] = "c:\\temp\\cplusplus";
-
-        filesystem::path dir(dir_path);
-        if( filesystem::create_directory(dir)) {
-            std::cout << "Success" << "\n";
-        }
-    }
-
+//    void test1() {
+//        const char dir_path[] = "c:\\temp\\cplusplus";
+//
+//        filesystem::path dir(dir_path);
+//        if( filesystem::create_directory(dir)) {
+//            std::cout << "Success" << "\n";
+//        }
+//    }
+//
 
 }
 #endif //PROJECT_IO_H

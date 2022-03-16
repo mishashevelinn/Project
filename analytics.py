@@ -162,9 +162,9 @@ def find_short_cycles(cycles: list, g: int) -> list[list]:
     return short_cycles
 
 
-G = read_graph_prom_txt('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.txt')
-save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
-G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
+G = read_graph_prom_txt('data/Hill_ClimberEvenOdd/solution_g=4_n=20_1.txt')
+# save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
+# G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # draw_graph(G)
 
 # G = read_graph_prom_txt('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.txt')
