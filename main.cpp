@@ -47,11 +47,10 @@ int main(){
     double failure = 0;
     double avgTime = 0;
     vector<int> N = {20};
-    int g = 4;
-//    int g_max = 6;
-    double iteration = 20;
+    int g = 5;
+    double iteration = 10;
 
-    string statfile_name = "../data/HillClimberEvenOdd/STATS_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1])+"/stats1.txt";
+    string statfile_name = "../data/HillClimberEvenOdd/STATS_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1]) + ".txt";
     ofstream statfile(statfile_name);
     for (int n: N) {
         int max_iter_solve = (int) pow(n, 2);

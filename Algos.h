@@ -64,8 +64,8 @@ namespace tools {
         //G.visited is not used to obtain all possible paths(cycles)
         int count = 0;
         for (int neighbour: G.Adj[u]) {
-                count += count_cycles(G, neighbour, v, k - 1); //g - 1
-                if(count >= 2) return count;
+            count += count_cycles(G, neighbour, v, k - 1); //g - 1
+            if (count >= 2) return count;
         }
 
         return count;
@@ -92,22 +92,23 @@ namespace tools {
         return v;
     }
 
+    void rout2edgesToRemove(Graph &G, vector<pair<int, int>> &edgesOnCylcle,vector<pair<int, int>> &edgesToRemoveOnCycle) {
+        for (pair<int, int> edge: edgesOnCylcle) {
+            if (G.isInitialEdge(edge)) edgesToRemoveOnCycle.push_back(edge);
+        }
+    }
 
-    void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCylcle) {
+    void replaceEdgeOnCycle(Graph &G, int u, int v, vector<pair<int, int>> &edgesOnCycle) {
         //Invoked when single short cycle is detected in the step of hill climber.
         //removing random edge from the short cycle and adding the edge (u,v)
         ///*Changed for Even-Odd version: edges from original cycle can't be removed///*
-        pair<int, int> edgeToRemove;
-        do{
-            edgeToRemove = edgesOnCylcle[random(0, (int)edgesOnCylcle.size() - 1)];
 
-        }while(!G.isInitialEdge(edgeToRemove));
-
+        pair <int, int> edgeToRemove = edgesOnCycle[random(0, (int) edgesOnCycle.size() - 1)];
         cout << "removing " << edgeToRemove.first << " " << edgeToRemove.second << endl;
         G.disConnect(edgeToRemove.first, edgeToRemove.second);
 //        assert(G.isNeighbour(edgeToRemove.first, edgeToRemove.second) == -1);
 
-       ///DEBUG: after removal of random edge on the cycle the condition should be always FALSE///
+        ///DEBUG: after removal of random edge on the cycle the condition should be always FALSE///
 //        tools::clear(G, G.d1);
 //        int cycles = tools::count_cycles(G, u, v, G.g-2);
 //        if (cycles == 1){
@@ -129,23 +130,37 @@ namespace tools {
         G.connect(u, v);
     }
 
+    bool isEven(int num) {
+        return !(num % 2);
+    }
+
     bool route_to_edges(list<int> route, vector<pair<int, int>> &edges) {
         //translates list: [1,2,3,4] to vector of pairs [(1,2),(2,3),(3,4)]
         std::list<int>::iterator it;
         for (it = route.begin(); it != route.end();) {
             if ((++it) != route.end()) {
                 --it;
-                edges.emplace_back(*it, *(it++));
+//                if (isEven(*it) && isEven(*(it++))) {
+//                    --it;
+                    edges.emplace_back(*it, *(it++));
+//                }
             }
         }
         return true;
     }
 
+    void printRoute(vector<pair<int, int>> &route) {
+        for (pair<int, int> edge: route) {
+            cout << "(" << edge.first << ", " << edge.second << ") --> ";
+        }
+        cout << endl;
+    }
 
     bool solve(Graph &G, int g, int max_iter) {
         int iter = 0;
+        int TALSHA_replaceCounter = 0;
         while (!G.legalDeg.empty() && iter < max_iter) {
-            int u_index = tools::random(0, (int)G.legalDeg.size() - 1);
+            int u_index = tools::random(0, (int) G.legalDeg.size() - 1);
             int u = G.legalDeg[u_index]; //pick a random u from V s.t. Deg(u) = 2
 
             int v = tools::getValidV(G, u); //pick a random v from V s.t. v is not adjacent to u, deg(v) = 2, v is Even
@@ -165,9 +180,17 @@ namespace tools {
                     list<int> route = G.trace_route(u, v);
 //                    io::print_route(route,u,v);
 
-                    vector<pair<int, int>> edges;
-                    route_to_edges(route, edges);
-                    tools::replaceEdgeOnCycle(G, u, v, edges);
+                    vector<pair<int, int>> edgesOnRoute;
+                    vector<pair<int, int>> edgesOnRouteToRemove;
+                    route_to_edges(route, edgesOnRoute);
+                    rout2edgesToRemove(G, edgesOnRoute, edgesOnRouteToRemove);
+                    if (edgesOnRouteToRemove.empty()) {
+                        cout << "No edges to remove on route:" << endl;
+                        printRoute(edgesOnRoute);
+                        break;
+                    }
+                    TALSHA_replaceCounter++;
+                    tools::replaceEdgeOnCycle(G, u, v, edgesOnRouteToRemove);
                     break;
                 }
                 default:  // (u,v) is k-candidate , k > 1; adding (u,v) to E yields more than 1 short cycle in G
@@ -175,6 +198,7 @@ namespace tools {
             }
             iter++;
         }
+        cout << "TALSHA: chek how many replacement (SINGLE_CYCLE case worked): " << TALSHA_replaceCounter << endl;
         return iter != max_iter; //TRUE if (for all v in V deg(v) = 3 & no short cycles in G)
     }
 

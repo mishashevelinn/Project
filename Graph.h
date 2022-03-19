@@ -132,10 +132,11 @@ bool Graph::isOdd(int v) {
 }
 
 bool Graph::isInitialEdge(pair<int, int> e) {
-    if ((abs(e.first - e.second) == 1) || abs(e.first - e.second) == n - 1) {
-        return true;
-    }
-    return false;
+//    if ((abs(e.first - e.second) == 1) || abs(e.first - e.second) == n - 1) {
+//        return true;
+//    }
+//    return false;
+        return (isEven(e.first) && isEven(e.second));
 }
 
 /********************************************************************/
