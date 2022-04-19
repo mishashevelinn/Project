@@ -112,6 +112,7 @@ list<int> Graph::trace_route(int start, int end) {
         w = PI[w];
     }
     route.push_front(w);
+    route.push_front(start);
     return route;
 }
 

@@ -46,7 +46,7 @@ namespace tools {
 
     int count_cycles(Graph &G, int u, int v, int k) {
         //DFS variant count all paths p s.t. len(p) < k. if p[-1] == v => there is a cycle c, len(c) < k
-        // initially k = g - 1
+        // initially k = g - 2
 
 //        if ( u == v) {
 //            cout << "u == v state can occur"; //it shouldn't
@@ -198,7 +198,7 @@ namespace tools {
             }
             iter++;
         }
-        cout << "TALSHA: chek how many replacement (SINGLE_CYCLE case worked): " << TALSHA_replaceCounter << endl;
+        cout << "TALSHA: check how many replacement (SINGLE_CYCLE case worked): " << TALSHA_replaceCounter << endl;
         return iter != max_iter; //TRUE if (for all v in V deg(v) = 3 & no short cycles in G)
     }
 
