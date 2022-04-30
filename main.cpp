@@ -4,6 +4,7 @@
 #include "IO.h"
 #include <string>
 
+
 //    Graph G(20, 6);
 //    G.connect(0, 6);
 //    G.connect(0, 12);
@@ -46,11 +47,14 @@ int main(){
     double success = 0;
     double failure = 0;
     double avgTime = 0;
-    vector<int> N = {20};
-    int g = 5;
-    double iteration = 10;
+    vector<int> N = {40, 44, 48, 52, 56, 60, 64, 68, 72, 76};
+    int g = 11;
+    double iteration = 1000;
+    ostringstream os;
+    os << fixed << setprecision(0) << iteration; // os.str() == string of {iterations}
 
-    string statfile_name = "../data/HillClimberEvenOdd/STATS_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+ to_string(N[N.size() - 1]) + ".txt";
+    string statfile_name = "../data/HillClimberEvenOdd/STATS_g="+ to_string(g)+"_n="+ to_string(N[0])+"-"+
+            to_string(N[N.size() - 1]) + "_iter=" + os.str() + ".txt";
     ofstream statfile(statfile_name);
     for (int n: N) {
         int max_iter_solve = (int) pow(n, 2);
@@ -68,15 +72,15 @@ int main(){
                 string nstr = to_string(n);
 
                 string name =
-                        "../data/HillClimberEvenOdd/solution_g=" + to_string(g) + "_n=" + to_string(n) +
+                        "../data/HillClimberEvenOdd/Graphs/solution_g=" + to_string(g) + "_n=" + to_string(n) +
                         "_" + to_string((int) success) + ".txt";
                 ofstream fileGraph(name);
                 io::write_graph(G, fileGraph);
-//                cout << "+" << endl;
+                cout << "+" << endl;
 
             } else {
                 failure++;
-//                cout << "-" << endl;
+                cout << "-" << endl;
                 end = clock();
 
             }

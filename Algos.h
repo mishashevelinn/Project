@@ -104,7 +104,7 @@ namespace tools {
         ///*Changed for Even-Odd version: edges from original cycle can't be removed///*
 
         pair <int, int> edgeToRemove = edgesOnCycle[random(0, (int) edgesOnCycle.size() - 1)];
-        cout << "removing " << edgeToRemove.first << " " << edgeToRemove.second << endl;
+//        cout << "removing " << edgeToRemove.first << " " << edgeToRemove.second << endl;
         G.disConnect(edgeToRemove.first, edgeToRemove.second);
 //        assert(G.isNeighbour(edgeToRemove.first, edgeToRemove.second) == -1);
 
@@ -185,8 +185,8 @@ namespace tools {
                     route_to_edges(route, edgesOnRoute);
                     rout2edgesToRemove(G, edgesOnRoute, edgesOnRouteToRemove);
                     if (edgesOnRouteToRemove.empty()) {
-                        cout << "No edges to remove on route:" << endl;
-                        printRoute(edgesOnRoute);
+//                        cout << "No edges to remove on route:" << endl;
+//                        printRoute(edgesOnRoute);
                         break;
                     }
                     TALSHA_replaceCounter++;
@@ -198,7 +198,7 @@ namespace tools {
             }
             iter++;
         }
-        cout << "TALSHA: check how many replacement (SINGLE_CYCLE case worked): " << TALSHA_replaceCounter << endl;
+//        cout << "TALSHA: check how many replacement (SINGLE_CYCLE case worked): " << TALSHA_replaceCounter << endl;
         return iter != max_iter; //TRUE if (for all v in V deg(v) = 3 & no short cycles in G)
     }
 
