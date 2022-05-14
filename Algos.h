@@ -24,14 +24,6 @@ namespace tools {
         }
     }
 
-    vector<int> getRandOrder(vector<int> &vertexes) {
-        // copy all even vertexes to new order vector and shuffle them, to random permutation
-        vector<int> order(vertexes);
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine e(seed);
-        std::shuffle(order.begin(), order.end(), e);
-        return order;
-    }
 
     int random(int min, int max) {
         std::random_device rd;     // only used once to initialise (seed) engine
@@ -154,64 +146,10 @@ namespace tools {
         cout << endl;
     }
 
-
-    bool generateEdge(Graph &g, int v) {
-        vector<int> availVertex;
-        for (int i = 0; i < g.legalDeg.size(); i++){
-            if (isLegalNeighbour(g, g.legalDeg[i])){
-                availVertex.push_back(g.legalDeg[i]);
-            }
-        }
-        if (availVertex.empty()) return false;
-        int u = random(0, availVertex.size() - 1);
-        g.connect(v, availVertex[u]);
-        return true;
-    }
-
-
-    void bfs(Graph &G, int root, int g) {
-        tools::clear(G);
-        queue<int> Q;
-        Q.push(root);
-        G.visited[root] = true;
-        G.visited_track.push_back(root);
-        while (!Q.empty()) {
-            int v = Q.front();
-            Q.pop();
-            for (int u : G.Adj[v]) {
-                if (!G.visited[u]) {
-                    G.d[u] = G.d[v] + 1;
-                    G.visited[u] = true;
-                    G.visited_track.push_back(u);
-                    if (G.d[u] == g-1) return;
-                    Q.push(u);
-                }
-            }
-        }
-    }
-    
-
-
-
-    bool solve_B(Graph &G, int g) {
-        vector<int> random_vertex_order = getRandOrder(G.legalDeg);
-        for (int v: random_vertex_order){
-            if (G.Adj[v].size() != 3) {
-                bfs(G, v, g);
-                if (!tools::generateEdge(G, v)) return false;
-                G.visited[v] = false;
-            }
-        }
-        return true;
-
-    }
-
-
     bool solve(Graph &G, int g, int max_iter) {
         int iter = 0;
         int TALSHA_replaceCounter = 0;
         while (!G.legalDeg.empty() && iter < max_iter) {
-
             int u_index = tools::random(0, (int) G.legalDeg.size() - 1);
             int u = G.legalDeg[u_index]; //pick a random u from V s.t. Deg(u) = 2
 
@@ -220,19 +158,17 @@ namespace tools {
                 iter++;
                 continue;
             }
-            bool connected = false;
-            for (int v: optional_neighbours_for_u) {
-                int num_cycles = tools::count_cycles(G, u, v, g - 2); //changed from g-1 to g-2 misha
-                switch (num_cycles) {
-                    case NO_CYCLES:  // E + {(u,v)} is partial solution
-                        G.connect(u, v);
-                        connected = true;
-                        break;
-                    case SINGLE_CYCLE: {  // (u,v) is 1-candidate
-                        tools::clear(G);
-                        G.findPath(u, v);  // shortest path closing the single cycle with E+(u,v),
-                        list<int> route = G.trace_route(u, v);
-                        //                    io::print_route(route,u,v);
+
+            int num_cycles = tools::count_cycles(G, u, v, g - 2); //changed from g-1 to g-2 misha
+            switch (num_cycles) {
+                case NO_CYCLES:  // E + {(u,v)} is partial solution
+                    G.connect(u, v);
+                    break;
+                case SINGLE_CYCLE: {  // (u,v) is 1-candidate
+                    tools::clear(G, G.d1);
+                    G.findPath(u, v);  // shortest path closing the single cycle with E+(u,v),
+                    list<int> route = G.trace_route(u, v);
+//                    io::print_route(route,u,v);
 
                         vector<pair<int, int>> edgesOnRoute;
                         vector<pair<int, int>> edgesOnRouteToRemove;
