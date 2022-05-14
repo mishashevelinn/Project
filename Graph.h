@@ -15,8 +15,7 @@ using namespace std;
 class Graph {
 public:
     vector<bool> visited;
-    vector<int> d1;
-    vector<int> d2;
+    vector<int> d;
     vector<int> PI;
     int n;
     int g;
@@ -70,8 +69,7 @@ Graph::Graph(int n, int g) {
     }
 
     visited = vector<bool>(n, false);
-    d1 = vector<int>(n, 0);
-    d2 = vector<int>(n, 0);
+    d = vector<int>(n, 0);
 
     visited_track = vector<int>();
 
