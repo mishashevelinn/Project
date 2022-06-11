@@ -161,12 +161,13 @@ def find_short_cycles(cycles: list, g: int) -> list[list]:
             print(cycle)
     return short_cycles
 
-
-G = read_graph_prom_txt('data/HillClimberEvenOdd/Graphs/solution_g=4_n=20_1.txt')
-draw_graph(G)
+#########################################EXAMPLE############################################
+#G = read_graph_prom_txt('data/HillClimberEvenOdd/Graphs/solution_g=4_n=20_1.txt')
+#draw_graph(G)
 # save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # G = load_graph_from_gml('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
 # draw_graph(G)
+#plt.show()
 
 # G = read_graph_prom_txt('data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.txt')
 # save_graph_gml(G, 'data/Hill_Climber/TEST_g=5_n=10-10/solution_g=5_n=10_1.gml')
@@ -175,11 +176,7 @@ draw_graph(G)
 # cycles = find_short_cycles(find_all_cycles(G), 5)
 # cycles = find_all_cycles(G)
 # save_cycles_csv(cycles, 'data/Hill_Climber/TEST_g=5_n=50/solution_g=5_n=50_1_cycles.csv')
-# short_cycles = find_short_cycles(cycles, 9)
-# save_cycles_csv(short_cycles, 'data/Hill_Climber/TEST_g=5_n=50/solution_g=5_n=50_1_short_cycles.csv')
 
-# short_cycles = find_short_cycles(
-#     load_cycles_from_csv('data/Hill_Climber/TEST_g=5_n=20-60/solution_g=5_n=30_1_cycles.csv') ,g=5)
-# print(short_cycles)
+# short_cycles = find_short_cycles(cycles)
 
-# plt.show()
+
